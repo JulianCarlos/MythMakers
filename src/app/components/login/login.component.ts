@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,12 +15,12 @@ export class LoginComponent {
   protected form: FormGroup;
   protected loginError: string | null = null;
 
-  private mockUser = {
-    username: 'Test',
-    password: '123123123'
-  };
-
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
@@ -33,10 +35,11 @@ export class LoginComponent {
       return;
     }
 
-    const { username, password } = this.form.value;
+    const { username, password } = this.form.value as { username: string; password: string };
 
-    if (username === this.mockUser.username && password === this.mockUser.password) {
-      alert('Login successful! 🎉 (Mock)');
+    if (this.authService.login(username, password)) {
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/overview';
+      this.router.navigateByUrl(returnUrl);
     } else {
       this.loginError = 'Invalid username or password';
     }

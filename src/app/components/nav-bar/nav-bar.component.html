@@ -1,12 +1,12 @@
 <div class="nav-bar-container">
-    <div class="header-title" routerLink="/overview">Myth Makers</div>
+  <h1 routerLink="/overview">Myth Makers</h1>
 
-    <div class="nav-button-container">
-        
-    </div>
-
-    <div class="nav-button-container">
-        <button type="button" routerLink="/login">Login</button>
-        <button type="button" routerLink="/register">Register</button>
-    </div>
+  <div class="nav-button-container">
+    @if (!isLoggedIn()) {
+      <button type="button" routerLink="/login">Login</button>
+      <button type="button" routerLink="/register">Register</button>
+    } @else {
+      <button type="button" (click)="logout()">Logout</button>
+    }
+  </div>
 </div>
