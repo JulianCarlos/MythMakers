@@ -1,0 +1,19 @@
+.nav-bar-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    padding-top: 25px;
+
+    .header-title {
+        font-size: 30px;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .nav-button-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+}
