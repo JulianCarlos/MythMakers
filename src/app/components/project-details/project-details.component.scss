@@ -20,4 +20,10 @@
         margin: 0;
       }
     }
+
+    .project-details-button-container {
+      display: flex;
+      gap: 15px;
+      justify-content: flex-end;
+    }
   }

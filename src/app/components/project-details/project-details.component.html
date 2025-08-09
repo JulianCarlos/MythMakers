@@ -1,9 +1,16 @@
 
 
 <div class="project-details-overview-container">
-    @if (this.selectedProject) {
+    @if (selectedProject) {
         <div class="project-details-header">
             <h1>{{selectedProject.name}}</h1>
+        </div>
+
+        <app-worlds-view [group]="worlds"></app-worlds-view>
+
+        <div class="project-details-button-container">
+            <button class="btn btn--outline btn--sm" routerLink="/login" type="button" (click)="save()">Discard</button>
+            <button class="btn btn--primary btn--sm" routerLink="/login" type="button" (click)="save()">Save</button>
         </div>
     }
 </div>

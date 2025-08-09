@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProjectOverviewListItemComponent } from "../../components/project-overview-list-item/project-overview-list-item.component";
 import { Project } from '../../models/project';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +13,7 @@ import { ProjectDetailsComponent } from "../../components/project-details/projec
   templateUrl: './overview-page.component.html',
   styleUrl: './overview-page.component.scss'
 })
-export class OverviewPageComponent {
+export class OverviewPageComponent implements OnInit {
   projects: Project[] = [
     { id: '1', name: 'Project Alpha' },
     { id: '2', name: 'Project Beta' },
@@ -24,11 +24,27 @@ export class OverviewPageComponent {
 
   constructor(private modal: ModalService) {}
 
+  ngOnInit() {
+    if (this.projects.length > 0) {
+      this.selectedProject = this.projects[0];
+    }
+  }
+
   onAddProject() {
     this.modal.openTextPrompt({ title: 'New project', placeholder: 'Enter project name' })
       .subscribe(value => {
-        if (!value) return;
-        this.projects = [{ id: Date.now().toString(), name: value }, ...this.projects];
+        if (!value) {
+          return;
+        }
+
+        const newProject: Project = {
+          id: Date.now().toString(),
+          name: value
+        }
+
+        this.projects = [newProject, ...this.projects];
+
+        this.selectedProject = newProject;
       });
   }
 
@@ -38,7 +54,10 @@ export class OverviewPageComponent {
       placeholder: 'Enter new name',
       initialValue: project.name
     }).subscribe(value => {
-      if (!value) return;
+      if (!value) {
+        return;
+      }
+      
       this.projects = this.projects.map(p =>
         p.id === project.id ? { ...p, name: value } : p
       );
@@ -57,12 +76,31 @@ export class OverviewPageComponent {
       cancelLabel: 'Cancel',
       danger: true
     }).subscribe(confirmed => {
-      if (!confirmed) return;
+      if (!confirmed) {
+        return;
+      }
+
       this.projects = this.projects.filter(p => p.id !== project.id);
+
+      if (this.selectedProject?.id === project.id) {
+        this.selectedProject = this.projects.length > 0 ? this.projects[0] : undefined;
+      }
     });
   }
 
   onProjectSelected(project: Project) {
     this.selectedProject = project;
+  }
+
+  saveProject(updated: Project) {
+    this.projects = this.projects.map(p =>
+      p.id === updated.id ? { ...p, ...updated } : p
+    );
+
+    if (this.selectedProject?.id === updated.id) {
+      this.selectedProject = this.projects.find(p => p.id === updated.id);
+    }
+
+    console.log(this.projects)
   }
 }

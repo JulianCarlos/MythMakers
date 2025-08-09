@@ -23,5 +23,5 @@
         </div>
     </div>
 
-    <app-project-details [selectedProject]="selectedProject"></app-project-details>
+    <app-project-details [selectedProject]="selectedProject" (onSave)="saveProject($event)"></app-project-details>
 </div>
