@@ -1,20 +1,25 @@
-<div class="project-overview-list-item-container">
-  <div class="project-overview-list-item-name" (click)="onOpen()">
-    <p>Item: Test1231251251251251251251251251252</p>
+<div
+  class="btn btn--ghost project-overview-list-item-container"
+  role="button"
+  tabindex="0"
+  (click)="onOpen()"
+  (keydown.enter)="onOpen()"
+  (keydown.space)="onOpen()"
+>
+  <div class="project-overview-list-item-name">
+    <p>{{ project?.name }}</p>
   </div>
 
-  <div
+  <button
+    class="btn btn--icon btn--ghost"
     [matMenuTriggerFor]="itemMenu"
     (click)="$event.stopPropagation()"
+    aria-label="Project actions"
   >
     <mat-icon fontIcon="more_vert" aria-hidden="true"></mat-icon>
-  </div>
+  </button>
 
-  <mat-menu
-    #itemMenu="matMenu"
-    xPosition="after"
-    yPosition="below"
-  >
+  <mat-menu #itemMenu="matMenu" xPosition="after" yPosition="below">
     <button mat-menu-item (click)="$event.stopPropagation(); onEdit()">
       <mat-icon fontIcon="edit"></mat-icon>
       <span>Edit</span>

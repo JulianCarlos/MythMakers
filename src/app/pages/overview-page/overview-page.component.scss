@@ -11,13 +11,6 @@
     display: flex;
     flex-direction: column;
 
-    h1 {
-      border-bottom: 2px solid gray;
-      padding: 15px;
-      margin: 0 0 10px;
-      color: white;
-    }
-
     .project-overview-list-container {
       flex: 1 1 auto;
       overflow: auto;
@@ -25,10 +18,19 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+    }
+  }
 
-      p {
-        color: white;
-      }
+  .project-overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.349);
+
+    h1 {
+      margin: 0;
     }
   }
 

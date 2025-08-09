@@ -1,17 +1,25 @@
 <div class="overview-main-container">
     <div class="project-overview-container">
-        <h1>Projects</h1>
+        <div class="project-overview-header">
+            <h1>Projects</h1>
+            <button
+            class="btn btn--icon btn--primary"
+            (click)="onAddProject()"
+            aria-label="Add project"
+            >
+            <mat-icon fontIcon="add"></mat-icon>
+            </button>
+        </div>  
 
         <div class="project-overview-list-container">
-            <app-project-overview-list-item></app-project-overview-list-item>
-            <app-project-overview-list-item></app-project-overview-list-item>
-            <app-project-overview-list-item></app-project-overview-list-item>
-            <app-project-overview-list-item></app-project-overview-list-item>
-            <app-project-overview-list-item></app-project-overview-list-item>
-            <app-project-overview-list-item></app-project-overview-list-item>
-            <app-project-overview-list-item></app-project-overview-list-item>
-            <app-project-overview-list-item></app-project-overview-list-item>
-            <app-project-overview-list-item></app-project-overview-list-item>
+            @for (project of projects; track project.id) {
+                <app-project-overview-list-item
+                [project]="project"
+                (rename)="onEditProject(project)"
+                (delete)="onDeleteProject(project)"
+                (open)="onProjectSelected(project)"
+                ></app-project-overview-list-item>
+            }
         </div>
     </div>
 

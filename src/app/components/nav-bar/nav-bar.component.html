@@ -3,10 +3,10 @@
 
   <div class="nav-button-container">
     @if (!isLoggedIn()) {
-      <button type="button" routerLink="/login">Login</button>
-      <button type="button" routerLink="/register">Register</button>
+      <button class="btn btn--primary btn--sm" routerLink="/login" type="button">Login</button>
+      <button class="btn btn--primary btn--sm" routerLink="/register" type="button">Register</button>
     } @else {
-      <button type="button" (click)="logout()">Logout</button>
+      <button class="btn btn--danger btn--sm" type="button" (click)="logout()">Logout</button>
     }
   </div>
 </div>

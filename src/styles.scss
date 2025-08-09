@@ -15,7 +15,6 @@ body {
     width: 100%;
     background-color: #122932;
     font-family: 'Segoe UI', sans-serif;
-    padding-top: 95px;
 }
 
 input {
@@ -50,22 +49,6 @@ input {
 input.ng-invalid.ng-touched {
     border: 2px solid #b41818;
     box-shadow: 0 0 6px rgba(229, 115, 115, 0.6);
-}
-
-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    background-color: #e57373;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background-color: #d95151;
-    transform: scale(1.05);
 }
 
 .login-main-container {
@@ -110,11 +93,6 @@ button:hover {
   input {
     width: 100%;
   }
-
-  button {
-    width: 100%;
-    font-size: 16px;
-  }
 }
 
 html, body { height: 100%; }
@@ -128,4 +106,101 @@ mat-icon {
 .mat-mdc-menu-content {
   background-color: darkgray !important;
   overflow: hidden;
+}
+
+.fancy-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px) saturate(110%);
+}
+
+:root {
+  --btn-bg: #2e4c55;
+  --btn-fg: #fff;
+  --btn-accent: #e57373;
+  --btn-accent-active: #d75c5c;
+  --btn-border: rgba(255,255,255,0.18);
+  --btn-hover-bg: rgba(255,255,255,0.08);
+  --btn-ring: rgba(229,115,115,0.45);
+}
+
+.btn {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  padding: 0.6rem 0.9rem;
+  font: 600 14px/1.2 inherit;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  border: 1px solid transparent;
+  border-radius: 0.6rem;
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+
+  /* depth & movement */
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--btn-ring);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn--primary {
+  background: var(--btn-accent);
+  &:hover:not(:disabled) { background: var(--btn-accent-active); }
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--btn-fg);
+  &:hover:not(:disabled) { background: var(--btn-hover-bg); }
+}
+
+.btn--outline {
+  background: transparent;
+  border-color: var(--btn-border);
+  &:hover:not(:disabled) { background: var(--btn-hover-bg); }
+}
+
+.btn--danger {
+  background: #e06464;
+  &:hover:not(:disabled) { background: #cc5050; }
+}
+
+.btn--sm {
+  padding: 0.45rem 0.7rem;
+  font-size: 13px;
+}
+
+.btn--lg {
+  padding: 0.8rem 1.1rem;
+  font-size: 15px;
+}
+
+.btn--icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  justify-content: center;
 }
