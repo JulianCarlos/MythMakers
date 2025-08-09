@@ -116,3 +116,16 @@ button:hover {
     font-size: 16px;
   }
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+mat-icon {
+  color: white !important;
+  cursor: pointer;
+}
+
+.mat-mdc-menu-content {
+  background-color: darkgray !important;
+  overflow: hidden;
+}

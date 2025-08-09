@@ -1,4 +1,6 @@
 .overview-main-container {
+  display: flex;
+
   .project-overview-container {
     height: 90vh;
     width: 300px;
@@ -28,5 +30,11 @@
         color: white;
       }
     }
+  }
+
+  .project-details-overview-container {
+    flex: 1 1 auto;
+    padding: 10px;
+    background-color: #333;
   }
 }

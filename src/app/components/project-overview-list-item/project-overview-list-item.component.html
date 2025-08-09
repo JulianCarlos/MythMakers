@@ -1,7 +1,27 @@
 <div class="project-overview-list-item-container">
-    <div class="project-overview-list-item-name">
-        <p>Item: Test1231251251251251251251251251252</p>
-    </div>
+  <div class="project-overview-list-item-name" (click)="onOpen()">
+    <p>Item: Test1231251251251251251251251251252</p>
+  </div>
 
-    <div class="project-overview-list-item-options"></div>
+  <div
+    [matMenuTriggerFor]="itemMenu"
+    (click)="$event.stopPropagation()"
+  >
+    <mat-icon fontIcon="more_vert" aria-hidden="true"></mat-icon>
+  </div>
+
+  <mat-menu
+    #itemMenu="matMenu"
+    xPosition="after"
+    yPosition="below"
+  >
+    <button mat-menu-item (click)="$event.stopPropagation(); onEdit()">
+      <mat-icon fontIcon="edit"></mat-icon>
+      <span>Edit</span>
+    </button>
+    <button mat-menu-item (click)="$event.stopPropagation(); onDelete()">
+      <mat-icon fontIcon="delete"></mat-icon>
+      <span>Delete</span>
+    </button>
+  </mat-menu>
 </div>
