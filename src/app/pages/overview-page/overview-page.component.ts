@@ -4,11 +4,12 @@ import { Project } from '../../models/project';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ModalService } from '../../core/modal/modal.service';
+import { ProjectDetailsComponent } from "../../components/project-details/project-details.component";
 
 @Component({
   selector: 'app-overview-page',
   standalone: true,
-  imports: [ProjectOverviewListItemComponent, MatIconModule, MatButtonModule],
+  imports: [ProjectOverviewListItemComponent, MatIconModule, MatButtonModule, ProjectDetailsComponent],
   templateUrl: './overview-page.component.html',
   styleUrl: './overview-page.component.scss'
 })
@@ -18,6 +19,8 @@ export class OverviewPageComponent {
     { id: '2', name: 'Project Beta' },
     { id: '3', name: 'Project Gamma' }
   ];
+
+  protected selectedProject?: Project;
 
   constructor(private modal: ModalService) {}
 
@@ -39,6 +42,10 @@ export class OverviewPageComponent {
       this.projects = this.projects.map(p =>
         p.id === project.id ? { ...p, name: value } : p
       );
+
+      if (this.selectedProject?.id === project.id) {
+        this.selectedProject = this.projects.find(p => p.id === project.id);
+      }
     });
   }
 
@@ -56,6 +63,6 @@ export class OverviewPageComponent {
   }
 
   onProjectSelected(project: Project) {
-    console.log('Selected project', project);
+    this.selectedProject = project;
   }
 }
