@@ -1,0 +1,41 @@
+<h2 class="segment-title">{{ title }}</h2>
+
+<div class="entity-list__grid" role="list">
+  @for (item of items; track idOf(item)) {
+    <div class="entity-list__tile" role="listitem">
+      <ng-container *ngIf="itemTpl; else defaultTile"
+                    [ngTemplateOutlet]="itemTpl"
+                    [ngTemplateOutletContext]="{ $implicit: item }">
+      </ng-container>
+
+      <ng-template #defaultTile>
+        <button
+          type="button"
+          class="btn btn--icon btn--primary entity-list__button"
+          (click)="onSelect(item)">
+          {{ labelOf(item) }}
+        </button>
+
+        @if (canRemove) {
+          <button
+            type="button"
+            aria-label="Remove"
+            class="entity-list__remove"
+            (click)="onRemove(item, $event)">
+            ×
+          </button>
+        }
+      </ng-template>
+    </div>
+  }
+
+  @if (canAdd) {
+    <button
+      type="button"
+      aria-label="Add"
+      class="btn btn--icon btn--outline entity-list__button"
+      (click)="onAdd()">
+      +
+    </button>
+  }
+</div>

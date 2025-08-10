@@ -1,39 +1,39 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Project } from '../../models/project';
 import { World } from '../../models/world';
 import { ModalService } from '../../core/modal/modal.service';
-import { Project } from '../../models/project';
+import { ViewListComponent } from '../../core/view-list/view-list.component';
 
 @Component({
   selector: 'app-worlds-view',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, ViewListComponent],
   templateUrl: './worlds-view.component.html',
   styleUrls: ['./worlds-view.component.scss']
 })
 export class WorldsViewComponent {
+  private modal = inject(ModalService);
+
   @Input() project?: Project;
 
   @Output() openWorld = new EventEmitter<string>();
   @Output() addWorldName = new EventEmitter<string>();
+  @Output() removeWorldId = new EventEmitter<string>();
 
-  get worlds(): World[] {
+  get worlds(): readonly World[] {
     return this.project?.worlds ?? [];
   }
 
-  constructor(private modal: ModalService) {}
-
-  onClickWorld(world: World) {
-    this.openWorld.emit(world.id);
-  }
-
-  onAddWorldItem(): void {
-    if (!this.project) return;
+  idOf = (w: World) => w.id;
+  labelOf = (w: World) => w.name ?? '';
+  onSelectWorld = (id: string) => this.openWorld.emit(id);
+  onRemoveWorld = (id: string) => this.removeWorldId.emit(id);
+  onAddWorld = () => {
     this.modal.openTextPrompt({ title: 'New world', placeholder: 'Enter world name' })
       .subscribe(value => {
-        if (!value?.trim()) return;
-        this.addWorldName.emit(value.trim());
+        const trimmed = value?.trim();
+        if (trimmed) this.addWorldName.emit(trimmed);
       });
-  }
+  };
 }

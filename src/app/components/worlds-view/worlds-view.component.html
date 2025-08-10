@@ -1,14 +1,11 @@
-<h2 class="segment-title">Worlds</h2>
-
-<div class="world-display-container">
-  @for (world of worlds; track world.id) {
-    <button class="btn btn--icon btn--primary world-display"
-            (click)="onClickWorld(world)">
-      {{ world.name }}
-    </button>
-  }
-
-  <button class="btn btn--icon btn--outline world-display" (click)="onAddWorldItem()">
-    <mat-icon fontIcon="add"></mat-icon>
-  </button>
-</div>
+<app-view-list
+  title="Worlds"
+  [items]="worlds"
+  [idOf]="idOf"
+  [labelOf]="labelOf"
+  [canAdd]="true"
+  [canRemove]="false"
+  [selectId]="onSelectWorld"
+  [removeId]="onRemoveWorld"
+  [addClick]="onAddWorld">
+</app-view-list>
