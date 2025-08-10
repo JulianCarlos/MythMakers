@@ -1,27 +1,32 @@
 <div class="overview-main-container">
     <div class="project-overview-container">
         <div class="project-overview-header">
-            <h1>Projects</h1>
-            <button
+        <h1>Projects</h1>
+        <button
             class="btn btn--icon btn--primary"
             (click)="onAddProject()"
-            aria-label="Add project"
-            >
+            aria-label="Add project">
             <mat-icon fontIcon="add"></mat-icon>
-            </button>
-        </div>  
+        </button>
+        </div>
 
         <div class="project-overview-list-container">
+        @if (projects$ | async; as projects) {
             @for (project of projects; track project.id) {
-                <app-project-overview-list-item
+            <app-project-overview-list-item
                 [project]="project"
                 (rename)="onEditProject(project)"
                 (delete)="onDeleteProject(project)"
-                (open)="onProjectSelected(project)"
-                ></app-project-overview-list-item>
+                (open)="onProjectSelected(project)">
+            </app-project-overview-list-item>
             }
+        }
         </div>
     </div>
 
-    <app-project-details [selectedProject]="selectedProject" (onSave)="saveProject($event)"></app-project-details>
+    <section class="details-pane">
+        <div class="project-details-overview-container">
+            <router-outlet></router-outlet>
+        </div>
+    </section>
 </div>

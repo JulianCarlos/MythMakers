@@ -1,50 +1,49 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { ProjectOverviewListItemComponent } from "../../components/project-overview-list-item/project-overview-list-item.component";
 import { Project } from '../../models/project';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ModalService } from '../../core/modal/modal.service';
-import { ProjectDetailsComponent } from "../../components/project-details/project-details.component";
+import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ProjectsStateService } from '../../services/projects-state.service';
+import { AsyncPipe } from '@angular/common';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-overview-page',
   standalone: true,
-  imports: [ProjectOverviewListItemComponent, MatIconModule, MatButtonModule, ProjectDetailsComponent],
+  imports: [ProjectOverviewListItemComponent, MatIconModule, MatButtonModule, RouterOutlet, AsyncPipe],
   templateUrl: './overview-page.component.html',
-  styleUrl: './overview-page.component.scss'
+  styleUrl: './overview-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverviewPageComponent implements OnInit {
-  projects: Project[] = [
-    { id: '1', name: 'Project Alpha' },
-    { id: '2', name: 'Project Beta' },
-    { id: '3', name: 'Project Gamma' }
-  ];
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private state = inject(ProjectsStateService);
 
-  protected selectedProject?: Project;
+  projects$ = this.state.projects$;
 
   constructor(private modal: ModalService) {}
 
   ngOnInit() {
-    if (this.projects.length > 0) {
-      this.selectedProject = this.projects[0];
+    this.state.seedDemoIfEmpty();
+
+    const current = this.state.getSnapshot();
+    if (!this.route.firstChild && current.length > 0) {
+      this.router.navigate(['project', current[0].id], { relativeTo: this.route });
     }
   }
 
   onAddProject() {
     this.modal.openTextPrompt({ title: 'New project', placeholder: 'Enter project name' })
+      .pipe(take(1))
       .subscribe(value => {
-        if (!value) {
-          return;
-        }
+        const name = value?.trim();
+        if (!name) return;
 
-        const newProject: Project = {
-          id: Date.now().toString(),
-          name: value
-        }
-
-        this.projects = [newProject, ...this.projects];
-
-        this.selectedProject = newProject;
+        const project = this.state.addProject(name);
+        this.router.navigate(['project', project.id], { relativeTo: this.route });
       });
   }
 
@@ -53,18 +52,12 @@ export class OverviewPageComponent implements OnInit {
       title: `Rename "${project.name}"`,
       placeholder: 'Enter new name',
       initialValue: project.name
-    }).subscribe(value => {
-      if (!value) {
-        return;
-      }
-      
-      this.projects = this.projects.map(p =>
-        p.id === project.id ? { ...p, name: value } : p
-      );
-
-      if (this.selectedProject?.id === project.id) {
-        this.selectedProject = this.projects.find(p => p.id === project.id);
-      }
+    })
+    .pipe(take(1))
+    .subscribe(value => {
+      const name = value?.trim();
+      if (!name) return;
+      this.state.renameProject(project.id, name);
     });
   }
 
@@ -75,32 +68,23 @@ export class OverviewPageComponent implements OnInit {
       confirmLabel: 'Delete',
       cancelLabel: 'Cancel',
       danger: true
-    }).subscribe(confirmed => {
-      if (!confirmed) {
-        return;
-      }
+    })
+    .pipe(take(1))
+    .subscribe(confirmed => {
+      if (!confirmed) return;
 
-      this.projects = this.projects.filter(p => p.id !== project.id);
+      this.state.deleteProject(project.id);
 
-      if (this.selectedProject?.id === project.id) {
-        this.selectedProject = this.projects.length > 0 ? this.projects[0] : undefined;
+      const remaining = this.state.getSnapshot();
+      if (remaining.length > 0) {
+        this.router.navigate(['project', remaining[0].id], { relativeTo: this.route });
+      } else {
+        this.router.navigate(['./'], { relativeTo: this.route });
       }
     });
   }
 
   onProjectSelected(project: Project) {
-    this.selectedProject = project;
-  }
-
-  saveProject(updated: Project) {
-    this.projects = this.projects.map(p =>
-      p.id === updated.id ? { ...p, ...updated } : p
-    );
-
-    if (this.selectedProject?.id === updated.id) {
-      this.selectedProject = this.projects.find(p => p.id === updated.id);
-    }
-
-    console.log(this.projects)
+    this.router.navigate(['project', project.id], { relativeTo: this.route });
   }
 }

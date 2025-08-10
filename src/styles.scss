@@ -6,7 +6,7 @@
     box-sizing: border-box;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
+p, h1, h2, h3, h4, h5, h6, label {
     font-weight: 600;
     color: #ffffff;
 }
@@ -211,4 +211,8 @@ mat-icon {
   flex-direction: column;
   gap: 8px;
   margin: 20px 0px;
+}
+
+.segment-title {
+  margin: 15px 0px;
 }

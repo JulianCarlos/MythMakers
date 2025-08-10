@@ -33,9 +33,22 @@
       margin: 0;
     }
   }
+  
+  .project-details-overview-container {
+    height: 88vh;
+    overflow: auto;
+    padding: 35px;
+    margin: 15px 0px 0px 15px;
+    border-radius: 15px 0px 0px 0px;
+    border-top: 2px solid rgba(255, 255, 255, 0.349);
+    border-left: 2px solid rgba(255, 255, 255, 0.349);
+    background-color: #333;
+  }
 
-    > app-project-details {
-    display: block;
+  .details-pane {
+    width: 100%;
     flex: 1 1 auto;
+    min-width: 0;
+    overflow: auto;
   }
 }

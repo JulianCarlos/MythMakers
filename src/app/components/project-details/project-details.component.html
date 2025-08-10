@@ -1,16 +1,13 @@
-
-
 <div class="project-details-overview-container">
-    @if (selectedProject) {
-        <div class="project-details-header">
-            <h1>{{selectedProject.name}}</h1>
-        </div>
+  @if (project$ | async; as project) {
+    <div class="project-details-header">
+      <h1>{{ project.name }}</h1>
+    </div>
 
-        <app-worlds-view [group]="worlds"></app-worlds-view>
-
-        <div class="project-details-button-container">
-            <button class="btn btn--outline btn--sm" routerLink="/login" type="button" (click)="save()">Discard</button>
-            <button class="btn btn--primary btn--sm" routerLink="/login" type="button" (click)="save()">Save</button>
-        </div>
-    }
+    <app-worlds-view
+      [project]="project"
+      (openWorld)="openWorld($event)"
+      (addWorldName)="addWorld(project, $event)">
+    </app-worlds-view>
+  } 
 </div>

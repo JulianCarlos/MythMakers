@@ -1,68 +1,47 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CommonModule, AsyncPipe } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest, map } from 'rxjs';
 import { Project } from '../../models/project';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { WorldsViewComponent } from "../worlds-view/worlds-view.component";
+import { WorldsViewComponent } from '../worlds-view/worlds-view.component';
+import { ProjectsStateService } from '../../services/projects-state.service';
 
 @Component({
   selector: 'app-project-details',
   standalone: true,
-  imports: [WorldsViewComponent],
+  imports: [CommonModule, ReactiveFormsModule, WorldsViewComponent, AsyncPipe],
   templateUrl: './project-details.component.html',
-  styleUrl: './project-details.component.scss'
+  styleUrl: './project-details.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProjectDetailsComponent implements OnInit {
-  @Input() set selectedProject(value: Project | undefined) {
-    this.SetFormData(value);
-  }
+export class ProjectDetailsComponent {
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private state = inject(ProjectsStateService);
 
-  get selectedProject() { return this._selectedProject; }
-  
-  private _selectedProject?: Project;
+  form: FormGroup = this.fb.group({});
 
-  @Output() onSave = new EventEmitter<Project>();
+  project$ = combineLatest([
+    this.state.projects$,
+    this.route.paramMap.pipe(map(p => p.get('projectId')))
+  ]).pipe(
+    map(([projects, id]) => projects.find(p => p.id === id))
+  );
 
-  protected form!: FormGroup;
+  addWorld(project: Project, name: string) {
+    const trimmed = name?.trim();
+    if (!trimmed) return;
 
-  protected get worlds (): FormGroup {
-    return this.form.get('worlds') as FormGroup; 
-  }
-
-  constructor(private fb: FormBuilder) {
-    this.initForm();
-  }
-
-  ngOnInit(): void {
-    
-  }
-
-  initForm(): void {
-    this.form = this.fb.group({
-      worlds: this.fb.group({
-        name: this.fb.control(null),
-        description: this.fb.control(null),
-      }),
+    this.state.addWorld(project.id, {
+      name: trimmed,
+      description: '',
+      cities: []
     });
   }
 
-  save(): void {
-    if (!this.selectedProject) return;
-
-    this.onSave.emit({
-      ...this.selectedProject,
-      worlds: this.form.value.worlds
-    });
-  }
-
-  private SetFormData(value: Project | undefined) {
-    if (!this.form)
-      return;
-
-    this.form.reset();
-
-    this._selectedProject = value;
-
-    if (this.form && value) {
-      this.form.patchValue({ worlds: value.worlds ?? null });
-    }
+  openWorld(worldId: string) {
+    this.router.navigate(['world', worldId], { relativeTo: this.route });
   }
 }

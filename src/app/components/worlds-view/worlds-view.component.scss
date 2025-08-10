@@ -1,0 +1,11 @@
+.world-display-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .world-display {
+        height: 125px;
+        width: 125px;
+        border-radius: 25px;
+    }
+}

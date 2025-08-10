@@ -1,11 +1,14 @@
-<div [formGroup]="group">
-    <div class="input-container">
-        <label for="name">World Name</label>
-        <input type="text" formControlName="name" placeholder="World Name">
-    </div>
+<h2 class="segment-title">Worlds</h2>
 
-    <div class="input-container">
-        <label for="name">World Description</label>
-        <textarea formControlName="description" placeholder="World Description" rows="5" cols="3"></textarea>
-    </div>
+<div class="world-display-container">
+  @for (world of worlds; track world.id) {
+    <button class="btn btn--icon btn--primary world-display"
+            (click)="onClickWorld(world)">
+      {{ world.name }}
+    </button>
+  }
+
+  <button class="btn btn--icon btn--outline world-display" (click)="onAddWorldItem()">
+    <mat-icon fontIcon="add"></mat-icon>
+  </button>
 </div>
