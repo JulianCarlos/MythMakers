@@ -1,0 +1,17 @@
+<h2 class="segment-title">Cities</h2>
+
+<div class="city-display-container">
+  @for (city of cities; track city.id) {
+    <button
+      class="btn btn--icon btn--primary city-display"
+      (click)="onClickCity(city)">
+      {{ city.name }}
+    </button>
+  }
+
+  <button
+    class="btn btn--icon btn--outline city-display"
+    (click)="onAddCityItem()">
+    <mat-icon fontIcon="add"></mat-icon>
+  </button>
+</div>

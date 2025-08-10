@@ -8,6 +8,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { RegisterPageComponent } from './pages/register-page/register-page.component';
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
 import { WorldDetailsComponent } from './components/world-details/world-details.component';
+import { CityDetailsComponent } from './components/city-details/city-details.component';
 
 export const routes: Routes = [
   { path: 'login', title: 'Login', component: LoginPageComponent, canMatch: [redirectLoggedIn] },
@@ -19,6 +20,7 @@ export const routes: Routes = [
     children: [
       { path: 'project/:projectId', component: ProjectDetailsComponent },
       { path: 'project/:projectId/world/:worldId', component: WorldDetailsComponent },
+      { path: 'project/:projectId/city/:cityId', component: CityDetailsComponent },
       { path: '', pathMatch: 'full', redirectTo: 'project/0' },
     ],
   },

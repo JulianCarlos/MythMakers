@@ -9,5 +9,11 @@
       (openWorld)="openWorld($event)"
       (addWorldName)="addWorld(project, $event)">
     </app-worlds-view>
-  } 
+
+    <app-cities-view
+      [project]="project"
+      (openCity)="openCity($event)"
+      (addCityName)="addCity(project, $event)">
+    </app-cities-view> <!-- ✅ removed stray '>' before closing tag -->
+  }
 </div>
