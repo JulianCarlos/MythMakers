@@ -21,6 +21,7 @@ export const routes: Routes = [
       { path: 'project/:projectId', component: ProjectDetailsComponent },
       { path: 'project/:projectId/world/:worldId', component: WorldDetailsComponent },
       { path: 'project/:projectId/city/:cityId', component: CityDetailsComponent },
+      { path: 'project/:projectId/character/:characterId', component: CityDetailsComponent },
       { path: '', pathMatch: 'full', redirectTo: 'project/0' },
     ],
   },

@@ -1,3 +1,4 @@
+import { Character } from "./character";
 import { City } from "./city";
 import { World } from "./world";
 
@@ -6,4 +7,5 @@ export interface Project {
     name: string;
     worlds?: World[];
     cities?: City[];
+    characters?: Character[];
 }

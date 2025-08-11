@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Project } from '../models/project';
 import { World } from '../models/world';
 import { City } from '../models/city';
+import { Character } from '../models/character';
 
 function genId(): string {
   return globalThis.crypto?.randomUUID?.() ?? Date.now().toString();
@@ -16,9 +17,9 @@ export class ProjectsStateService {
   seedDemoIfEmpty(): void {
     if (this._projects$.value.length === 0) {
       this._projects$.next([
-        { id: '0', name: 'Project Alpha', worlds: [], cities: [] },
-        { id: '1', name: 'Project Beta',  worlds: [], cities: [] },
-        { id: '2', name: 'Project Gamma', worlds: [], cities: [] }
+        { id: '0', name: 'Project Alpha', worlds: [], cities: [], characters: [] },
+        { id: '1', name: 'Project Beta',  worlds: [], cities: [], characters: [] },
+        { id: '2', name: 'Project Gamma', worlds: [], cities: [], characters: [] }
       ]);
     }
   }
@@ -47,7 +48,6 @@ export class ProjectsStateService {
     this._projects$.next(this._projects$.value.filter(p => p.id !== id));
   }
 
-  /** -------- WORLDS (no cities on worlds) -------- */
   addWorld(projectId: string, world: { name: string; description?: string }): World {
     const newWorld: World = {
       id: genId(),
@@ -66,7 +66,6 @@ export class ProjectsStateService {
     return newWorld;
   }
 
-  /** -------- PROJECT-LEVEL CITIES ONLY -------- */
   addCity(projectId: string, city: { name: string; description?: string }): City {
     const newCity: City = {
       id: genId(),
@@ -83,5 +82,22 @@ export class ProjectsStateService {
     );
 
     return newCity;
+  }
+
+  addCharacter(projectId: string, character: { name: string; description?: string }): Character {
+    const newCharacter: Character = {
+      id: genId(),
+      name: character.name,
+      description: character.description ?? '',
+      createdAt: new Date()
+    };
+
+    this._projects$.next(
+      this._projects$.value.map(p =>
+        p.id === projectId ? { ...p, characters: [...(p.characters ?? []), newCharacter] } : p
+      )
+    );
+
+    return newCharacter;
   }
 }
