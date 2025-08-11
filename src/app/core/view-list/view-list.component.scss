@@ -28,6 +28,10 @@
   border-radius: var(--tile-radius);
 }
 
+.add-button {
+  font-size: 30px;
+}
+
 .entity-list__remove {
   position: absolute;
   top: var(--remove-offset);

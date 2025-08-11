@@ -38,7 +38,7 @@
             [attr.aria-label]="removeAriaLabel"
             class="entity-list__remove"
             (click)="onRemove(item, $event)">
-            ×
+            <mat-icon fontIcon="add"></mat-icon>
           </button>
         }
       </ng-template>
@@ -50,7 +50,7 @@
       type="button"
       [attr.aria-label]="addAriaLabel"
       [ngClass]="addButtonClass"
-      class="entity-list__button"
+      class="entity-list__button add-button"
       [style.background]="tileBackground || null"
       (click)="onAdd()">
       +

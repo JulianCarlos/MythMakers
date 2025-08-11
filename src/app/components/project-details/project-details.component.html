@@ -2,8 +2,10 @@
   @if (project$ | async; as project) {
     <div class="project-details-header">
       <h1>{{ project.name }}</h1>
+      <input type="search" id="site-search" name="q" />
     </div>
-
+    <br>
+    
     <app-worlds-view
       [project]="project"
       (openWorld)="openWorld($event)"
