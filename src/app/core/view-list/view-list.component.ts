@@ -1,12 +1,23 @@
 import { ChangeDetectionStrategy, Component, ContentChild, HostBinding, Input, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 type MaybeNum = number | string;
 
 @Component({
   selector: 'app-view-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule, 
+    CommonModule,
+    MatButtonModule,
+    MatMenu,
+    MatIcon,
+    MatMenuTrigger,
+    MatMenuItem
+  ],
   templateUrl: './view-list.component.html',
   styleUrls: ['./view-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -63,6 +74,29 @@ export class ViewListComponent {
   onAdd() {
     if (!this.canAdd) return;
     this.addClick?.();
+  }
+
+  onChangeSize(size: 'small' | 'medium' | 'large') {
+    switch (size) {
+      case 'small':
+        this.tileSize = 100;
+        this.tileRadius = 4;
+        this.removeButtonSize = 16;
+        this.removeButtonOffset = 4;
+        break;
+      case 'medium':
+        this.tileSize = 150;
+        this.tileRadius = 8;
+        this.removeButtonSize = 20;
+        this.removeButtonOffset = 6;
+        break;
+      case 'large':
+        this.tileSize = 200;
+        this.tileRadius = 12;
+        this.removeButtonSize = 24;
+        this.removeButtonOffset = 8;
+        break;
+    }
   }
 
   private asCss(v: MaybeNum, unit: string): string | undefined {

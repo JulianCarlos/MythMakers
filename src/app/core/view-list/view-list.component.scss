@@ -1,10 +1,14 @@
 :host {
   --grid-gap: 10px;
   --grid-mb: 40px;
-  --tile-size: 125px;
-  --tile-radius: 25px;
-  --remove-size: 28px;
-  --remove-offset: 4px;
+  --tile-size: 150px;
+  --tile-radius: 8px;
+  --remove-size: 20px;
+  --remove-offset: 6px;
+}
+
+.segment-header-container {
+  border-bottom: 1px dashed white;
 }
 
 .entity-list__grid {
@@ -35,4 +39,11 @@
   border: none;
   background: transparent;
   cursor: pointer;
+}
+
+.segment-header-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
 }
