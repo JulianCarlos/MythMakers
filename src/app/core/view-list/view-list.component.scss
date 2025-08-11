@@ -1,8 +1,17 @@
+:host {
+  --grid-gap: 10px;
+  --grid-mb: 40px;
+  --tile-size: 125px;
+  --tile-radius: 25px;
+  --remove-size: 28px;
+  --remove-offset: 4px;
+}
+
 .entity-list__grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 40px;
+  gap: var(--grid-gap);
+  margin-bottom: var(--grid-mb);
 }
 
 .entity-list__tile {
@@ -10,17 +19,17 @@
 }
 
 .entity-list__button {
-  height: 125px;
-  width: 125px;
-  border-radius: 25px;
+  height: var(--tile-size);
+  width: var(--tile-size);
+  border-radius: var(--tile-radius);
 }
 
 .entity-list__remove {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 28px;
-  height: 28px;
+  top: var(--remove-offset);
+  right: var(--remove-offset);
+  width: var(--remove-size);
+  height: var(--remove-size);
   display: grid;
   place-items: center;
   border: none;

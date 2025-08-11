@@ -11,7 +11,9 @@
       <ng-template #defaultTile>
         <button
           type="button"
-          class="btn btn--icon btn--primary entity-list__button"
+          [ngClass]="itemButtonClass"
+          class="entity-list__button"
+          [style.background]="tileBackground || null"
           (click)="onSelect(item)">
           {{ labelOf(item) }}
         </button>
@@ -19,7 +21,7 @@
         @if (canRemove) {
           <button
             type="button"
-            aria-label="Remove"
+            [attr.aria-label]="removeAriaLabel"
             class="entity-list__remove"
             (click)="onRemove(item, $event)">
             ×
@@ -32,8 +34,10 @@
   @if (canAdd) {
     <button
       type="button"
-      aria-label="Add"
-      class="btn btn--icon btn--outline entity-list__button"
+      [attr.aria-label]="addAriaLabel"
+      [ngClass]="addButtonClass"
+      class="entity-list__button"
+      [style.background]="tileBackground || null"
       (click)="onAdd()">
       +
     </button>
