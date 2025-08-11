@@ -15,6 +15,7 @@ export class CharactersViewComponent {
   private modal = inject(ModalService);
 
   @Input() project?: Project;
+  @Input() searchInput?: string;
 
   @Output() openCharacter = new EventEmitter<string>();
   @Output() addCharacterName = new EventEmitter<string>();
@@ -22,6 +23,14 @@ export class CharactersViewComponent {
 
   get characters(): readonly Character[] {
     return this.project?.characters ?? [];
+  }
+
+  get filteredCharacters(): readonly Character[] {
+    const q = (this.searchInput ?? '').trim();
+    if (!q) return this.characters;
+
+    const needle = normalize(q);
+    return this.characters.filter(w => normalize(w.name ?? '').includes(needle));
   }
 
   idOf = (c: Character) => c.id;
@@ -35,4 +44,11 @@ export class CharactersViewComponent {
         if (trimmed) this.addCharacterName.emit(trimmed);
       });
   };
+}
+
+function normalize(s: string): string {
+  return (s ?? '')
+    .toLocaleLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '');
 }

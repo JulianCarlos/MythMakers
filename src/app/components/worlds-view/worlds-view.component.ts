@@ -16,6 +16,7 @@ export class WorldsViewComponent {
   private modal = inject(ModalService);
 
   @Input() project?: Project;
+  @Input() searchInput?: string;
 
   @Output() openWorld = new EventEmitter<string>();
   @Output() addWorldName = new EventEmitter<string>();
@@ -23,6 +24,14 @@ export class WorldsViewComponent {
 
   get worlds(): readonly World[] {
     return this.project?.worlds ?? [];
+  }
+
+  get filteredWorlds(): readonly World[] {
+    const q = (this.searchInput ?? '').trim();
+    if (!q) return this.worlds;
+
+    const needle = normalize(q);
+    return this.worlds.filter(w => normalize(w.name ?? '').includes(needle));
   }
 
   idOf = (w: World) => w.id;
@@ -36,4 +45,11 @@ export class WorldsViewComponent {
         if (trimmed) this.addWorldName.emit(trimmed);
       });
   };
+}
+
+function normalize(s: string): string {
+  return (s ?? '')
+    .toLocaleLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '');
 }

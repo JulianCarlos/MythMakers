@@ -16,6 +16,7 @@ export class CitiesViewComponent {
   private modal = inject(ModalService);
 
   @Input() project?: Project;
+  @Input() searchInput?: string;
 
   @Output() openCity = new EventEmitter<string>();
   @Output() addCityName = new EventEmitter<string>();
@@ -23,6 +24,14 @@ export class CitiesViewComponent {
 
   get cities(): readonly City[] {
     return this.project?.cities ?? [];
+  }
+
+  get filteredCities(): readonly City[] {
+    const q = (this.searchInput ?? '').trim();
+    if (!q) return this.cities;
+
+    const needle = normalize(q);
+    return this.cities.filter(w => normalize(w.name ?? '').includes(needle));
   }
 
   idOf = (c: City) => c.id;
@@ -36,4 +45,11 @@ export class CitiesViewComponent {
         if (trimmed) this.addCityName.emit(trimmed);
       });
   };
+}
+
+function normalize(s: string): string {
+  return (s ?? '')
+    .toLocaleLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '');
 }

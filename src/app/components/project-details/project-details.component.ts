@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,13 +17,25 @@ import { CharactersViewComponent } from '../characters-view/characters-view.comp
   styleUrl: './project-details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProjectDetailsComponent {
+export class ProjectDetailsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private state = inject(ProjectsStateService);
 
   form: FormGroup = this.fb.group({});
+
+  protected searchInput: string = '';
+
+  ngOnInit() {
+    this.form = this.fb.group({
+      siteSearch: [''],
+    });
+
+    this.form.get('siteSearch')!.valueChanges.subscribe(value => {
+      this.searchInput = value;
+    });
+  }
 
   project$ = combineLatest([
     this.state.projects$,

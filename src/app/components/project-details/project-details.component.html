@@ -1,27 +1,33 @@
-<div class="project-details-overview-container">
-  @if (project$ | async; as project) {
-    <div class="project-details-header">
-      <h1>{{ project.name }}</h1>
-      <input type="search" id="site-search" name="q" />
-    </div>
-    <br>
-    
-    <app-worlds-view
-      [project]="project"
-      (openWorld)="openWorld($event)"
-      (addWorldName)="addWorld(project, $event)">
-    </app-worlds-view>
+<form [formGroup]="form">
+  <div class="project-details-overview-container">
+    @if (project$ | async; as project) {
+      <div class="project-details-header">
+        <h1>{{ project.name }}</h1>
+        <input type="search" id="siteSearch" name="q" formControlName="siteSearch" />
+      </div>
+      <br>
+      
+      <app-worlds-view
+        [project]="project"
+        [searchInput]="searchInput"
+        (openWorld)="openWorld($event)"
+        (addWorldName)="addWorld(project, $event)">
+      </app-worlds-view>
 
-    <app-cities-view
-      [project]="project"
-      (openCity)="openCity($event)"
-      (addCityName)="addCity(project, $event)">
-    </app-cities-view>
+      <app-cities-view
+        [project]="project"
+        [searchInput]="searchInput"
+        (openCity)="openCity($event)"
+        (addCityName)="addCity(project, $event)">
+      </app-cities-view>
 
-    <app-characters-view
-      [project]="project"
-      (openCharacter)="openCharacter($event)"
-      (addCharacterName)="addCharacter(project, $event)">
-    </app-characters-view>
-  }
-</div>
+      <app-characters-view
+        [project]="project"
+        [searchInput]="searchInput"
+        (openCharacter)="openCharacter($event)"
+        (addCharacterName)="addCharacter(project, $event)">
+      </app-characters-view>
+    }
+  </div>
+</form>
+
