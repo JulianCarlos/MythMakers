@@ -9,6 +9,9 @@ function genId(): string {
   return globalThis.crypto?.randomUUID?.() ?? Date.now().toString();
 }
 
+type EntityKey = 'worlds' | 'countries' | 'cities' | 'characters';
+type BaseInput = { name: string; description?: string };
+
 @Injectable({ providedIn: 'root' })
 export class ProjectsStateService {
   private readonly _projects$ = new BehaviorSubject<Project[]>([]);
@@ -29,7 +32,7 @@ export class ProjectsStateService {
   }
 
   addProject(name: string): Project {
-    const project: Project = { id: genId(), name, worlds: [], cities: [] };
+    const project: Project = { id: genId(), name, worlds: [], cities: [], characters: [] };
     this._projects$.next([project, ...this._projects$.value]);
     return project;
   }
@@ -37,67 +40,60 @@ export class ProjectsStateService {
   upsert(project: Project): void {
     const ps = this._projects$.value;
     const i = ps.findIndex(x => x.id === project.id);
-    this._projects$.next(i === -1 ? [project, ...ps] : ps.map(x => x.id === project.id ? project : x));
+    this._projects$.next(i === -1 ? [project, ...ps] : ps.map(x => (x.id === project.id ? project : x)));
   }
 
   renameProject(id: string, name: string): void {
-    this._projects$.next(this._projects$.value.map(p => p.id === id ? { ...p, name } : p));
+    this._projects$.next(this._projects$.value.map(p => (p.id === id ? { ...p, name } : p)));
   }
 
   deleteProject(id: string): void {
     this._projects$.next(this._projects$.value.filter(p => p.id !== id));
   }
 
-  addWorld(projectId: string, world: { name: string; description?: string }): World {
-    const newWorld: World = {
-      id: genId(),
-      name: world.name,
-      description: world.description ?? '',
-      projectId,
-      createdAt: new Date()
-    };
-
-    this._projects$.next(
-      this._projects$.value.map(p =>
-        p.id === projectId ? { ...p, worlds: [...(p.worlds ?? []), newWorld] } : p
-      )
-    );
-
-    return newWorld;
+  private updateProjects(mutator: (projects: Project[]) => Project[]): void {
+    this._projects$.next(mutator(this._projects$.value));
   }
 
-  addCity(projectId: string, city: { name: string; description?: string }): City {
-    const newCity: City = {
-      id: genId(),
-      name: city.name,
-      description: city.description ?? '',
-      projectId,
-      createdAt: new Date()
-    };
-
-    this._projects$.next(
-      this._projects$.value.map(p =>
-        p.id === projectId ? { ...p, cities: [...(p.cities ?? []), newCity] } : p
-      )
-    );
-
-    return newCity;
+  private updateProject(projectId: string, mutator: (p: Project) => Project): void {
+    this.updateProjects(ps => ps.map(p => (p.id === projectId ? mutator(p) : p)));
   }
 
-  addCharacter(projectId: string, character: { name: string; description?: string }): Character {
-    const newCharacter: Character = {
+  private buildEntity(projectId: string, key: EntityKey, input: BaseInput): World | City | Character {
+    const base = {
       id: genId(),
-      name: character.name,
-      description: character.description ?? '',
+      name: input.name,
+      description: input.description ?? '',
       createdAt: new Date()
     };
 
-    this._projects$.next(
-      this._projects$.value.map(p =>
-        p.id === projectId ? { ...p, characters: [...(p.characters ?? []), newCharacter] } : p
-      )
-    );
+    if (key === 'characters') {
+      return base as Character;
+    }
 
-    return newCharacter;
+    return { ...base, projectId } as World | City;
+  }
+
+  addEntity(projectId: string, key: EntityKey, input: BaseInput): World | City | Character {
+    const entity = this.buildEntity(projectId, key, input);
+
+    this.updateProject(projectId, p => ({
+      ...p,
+      [key]: [...(p[key] ?? []), entity] as Project[typeof key]
+    }));
+
+    return entity;
+  }
+
+  addWorld(projectId: string, world: BaseInput): World {
+    return this.addEntity(projectId, 'worlds', world) as World;
+  }
+
+  addCity(projectId: string, city: BaseInput): City {
+    return this.addEntity(projectId, 'cities', city) as City;
+  }
+
+  addCharacter(projectId: string, character: BaseInput): Character {
+    return this.addEntity(projectId, 'characters', character) as Character;
   }
 }

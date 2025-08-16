@@ -7,7 +7,7 @@ import { ModalService } from '../../core/modal/modal.service';
 import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { ProjectsStateService } from '../../services/projects-state.service';
 import { AsyncPipe } from '@angular/common';
-import { take } from 'rxjs/operators';
+import { first, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-overview-page',
@@ -69,7 +69,7 @@ export class OverviewPageComponent implements OnInit {
       cancelLabel: 'Cancel',
       danger: true
     })
-    .pipe(take(1))
+    .pipe(first())
     .subscribe(confirmed => {
       if (!confirmed) return;
 
