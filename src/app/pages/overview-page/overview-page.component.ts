@@ -8,11 +8,12 @@ import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { ProjectsStateService } from '../../services/projects-state.service';
 import { AsyncPipe } from '@angular/common';
 import { first, take } from 'rxjs/operators';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-overview-page',
   standalone: true,
-  imports: [ProjectOverviewListItemComponent, MatIconModule, MatButtonModule, RouterOutlet, AsyncPipe],
+  imports: [ProjectOverviewListItemComponent, MatIconModule, MatButtonModule, RouterOutlet, AsyncPipe, CdkDropList, CdkDrag],
   templateUrl: './overview-page.component.html',
   styleUrl: './overview-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -86,5 +87,9 @@ export class OverviewPageComponent implements OnInit {
 
   onProjectSelected(project: Project) {
     this.router.navigate(['project', project.id], { relativeTo: this.route });
+  }
+
+  drop(event: CdkDragDrop<Project[]>) {
+    this.state.reorderProjects(event.previousIndex, event.currentIndex);
   }
 }

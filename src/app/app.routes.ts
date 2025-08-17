@@ -9,6 +9,8 @@ import { RegisterPageComponent } from './pages/register-page/register-page.compo
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
 import { WorldDetailsComponent } from './components/world-details/world-details.component';
 import { CityDetailsComponent } from './components/city-details/city-details.component';
+import { CharacterDetailsComponent } from './components/character-details/character-details.component';
+import { CountryDetailsComponent } from './components/country-details/country-details.component';
 
 export const routes: Routes = [
   { path: 'login', title: 'Login', component: LoginPageComponent, canMatch: [redirectLoggedIn] },
@@ -20,8 +22,9 @@ export const routes: Routes = [
     children: [
       { path: 'project/:projectId', component: ProjectDetailsComponent },
       { path: 'project/:projectId/world/:worldId', component: WorldDetailsComponent },
+      { path: 'project/:projectId/country/:countryId', component: CountryDetailsComponent },
       { path: 'project/:projectId/city/:cityId', component: CityDetailsComponent },
-      { path: 'project/:projectId/character/:characterId', component: CityDetailsComponent },
+      { path: 'project/:projectId/character/:characterId', component: CharacterDetailsComponent },
       { path: '', pathMatch: 'full', redirectTo: 'project/0' },
     ],
   },

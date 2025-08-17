@@ -1,9 +1,11 @@
+// projects-state.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Project } from '../models/project';
 import { World } from '../models/world';
 import { City } from '../models/city';
 import { Character } from '../models/character';
+import { moveItemInArray } from '@angular/cdk/drag-drop'; // ⬅️ add this
 
 function genId(): string {
   return globalThis.crypto?.randomUUID?.() ?? Date.now().toString();
@@ -49,6 +51,13 @@ export class ProjectsStateService {
 
   deleteProject(id: string): void {
     this._projects$.next(this._projects$.value.filter(p => p.id !== id));
+  }
+
+  /** ⬇️ New: reorder projects and emit */
+  reorderProjects(previousIndex: number, currentIndex: number): void {
+    const copy = [...this._projects$.value];
+    moveItemInArray(copy, previousIndex, currentIndex);
+    this._projects$.next(copy);
   }
 
   private updateProjects(mutator: (projects: Project[]) => Project[]): void {

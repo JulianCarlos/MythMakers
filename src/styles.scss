@@ -236,3 +236,10 @@ mat-icon {
 .segment-title {
   margin: 15px 0px;
 }
+
+.no-select {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE 10+ */
+  user-select: none;         /* Standard */
+}

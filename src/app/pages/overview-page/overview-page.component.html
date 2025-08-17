@@ -1,32 +1,36 @@
 <div class="overview-main-container">
-    <div class="project-overview-container">
-        <div class="project-overview-header">
-        <h1>Projects</h1>
-        <button
-            class="btn btn--icon btn--primary"
-            (click)="onAddProject()"
-            aria-label="Add project">
-            <mat-icon fontIcon="add"></mat-icon>
-        </button>
-        </div>
-
-        <div class="project-overview-list-container">
-        @if (projects$ | async; as projects) {
-            @for (project of projects; track project.id) {
-            <app-project-overview-list-item
-                [project]="project"
-                (rename)="onEditProject(project)"
-                (delete)="onDeleteProject(project)"
-                (open)="onProjectSelected(project)">
-            </app-project-overview-list-item>
-            }
-        }
-        </div>
+  <div class="project-overview-container no-select">
+    <div class="project-overview-header">
+      <h1>Projects</h1>
+      <button
+        class="btn btn--icon btn--primary"
+        (click)="onAddProject()"
+        aria-label="Add project">
+        <mat-icon fontIcon="add"></mat-icon>
+      </button>
     </div>
 
-    <section class="details-pane">
-        <div class="project-details-overview-container">
-            <router-outlet></router-outlet>
-        </div>
-    </section>
+    <div
+      cdkDropList
+      [cdkDropListData]="(projects$ | async) ?? []"
+      (cdkDropListDropped)="drop($event)"
+      class="project-overview-list-container">
+
+      @for (project of (projects$ | async) ?? []; track project.id) {
+        <app-project-overview-list-item
+          cdkDrag
+          [project]="project"
+          (rename)="onEditProject(project)"
+          (delete)="onDeleteProject(project)"
+          (open)="onProjectSelected(project)">
+        </app-project-overview-list-item>
+      }
+    </div>
+  </div>
+
+  <section class="details-pane">
+    <div class="project-details-overview-container">
+      <router-outlet></router-outlet>
+    </div>
+  </section>
 </div>
