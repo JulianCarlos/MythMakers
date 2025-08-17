@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "genAll:local": "ng-openapi-gen -c ng-openapi-gen.json",
+    "genAll:local": "set NODE_OPTIONS=--use-system-ca&& ng-openapi-gen -c ng-openapi-gen.json",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",

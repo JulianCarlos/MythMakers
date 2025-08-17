@@ -6,7 +6,7 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { PingService } from './services/ping.service';
+import { ProjectService } from './services/project.service';
 
 /**
  * Module that provides all services and configuration.
@@ -16,7 +16,7 @@ import { PingService } from './services/ping.service';
   exports: [],
   declarations: [],
   providers: [
-    PingService,
+    ProjectService,
     ApiConfiguration
   ],
 })
