@@ -5,8 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "gen:api": "ng-openapi-gen --config ng-openapi-gen.json",
-    "genAll": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (!(Test-Path 'src/openapi')) { New-Item -ItemType Directory -Path 'src/openapi' | Out-Null }; dotnet build ../API/API.csproj -c Debug /p:UseAppHost=false /p:OutDir=../_build/api/ /p:AppendTargetFrameworkToOutputPath=false; Set-Location ../API; dotnet tool restore; dotnet tool run swagger tofile --output ../web/src/openapi/openapi.json ../_build/api/API.dll v1; Set-Location ../web; npx shx rm -rf src/app/api; npx openapi-generator-cli generate -c openapi-generator.config.yaml; npx prettier --write src; npx tsc -p tsconfig.json --noEmit\"",
+    "genAll": "ng-openapi-gen --config ng-openapi-gen.json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:MythMakers": "node dist/myth-makers/server/server.mjs"

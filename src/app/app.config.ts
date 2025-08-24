@@ -9,8 +9,8 @@ import {
 } from '@angular/common/http';
 import { authInterceptor } from './interceptors/auth-interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { BASE_PATH } from '@api/variables';
 import { environment } from 'environments/environment';
+import { ApiConfiguration } from '@api/api-configuration';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +19,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimationsAsync(),
     provideHttpClient(),
-    { provide: BASE_PATH, useValue: environment.apiUrl },
+    { provide: ApiConfiguration, useValue: { rootUrl: environment.apiUrl } }
   ],
 };
