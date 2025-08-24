@@ -9,7 +9,7 @@ import { ViewListComponent } from '../../core/view-list/view-list.component';
   standalone: true,
   imports: [ViewListComponent],
   templateUrl: './countries-view.component.html',
-  styleUrl: './countries-view.component.scss'
+  styleUrl: './countries-view.component.scss',
 })
 export class CountriesViewComponent {
   private modal = inject(ModalService);
@@ -30,7 +30,9 @@ export class CountriesViewComponent {
     if (!q) return this.countries;
 
     const needle = normalize(q);
-    return this.countries.filter(w => normalize(w.name ?? '').includes(needle));
+    return this.countries.filter((w) =>
+      normalize(w.name ?? '').includes(needle),
+    );
   }
 
   idOf = (w: Country) => w.id;
@@ -38,8 +40,12 @@ export class CountriesViewComponent {
   onSelectCountry = (id: string) => this.openCountry.emit(id);
   onRemoveCountry = (id: string) => this.removeCountryId.emit(id);
   onAddCountry = () => {
-    this.modal.openTextPrompt({ title: 'New country', placeholder: 'Enter country name' })
-      .subscribe(value => {
+    this.modal
+      .openTextPrompt({
+        title: 'New country',
+        placeholder: 'Enter country name',
+      })
+      .subscribe((value) => {
         const trimmed = value?.trim();
         if (trimmed) this.addCountryName.emit(trimmed);
       });

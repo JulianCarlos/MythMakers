@@ -11,7 +11,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     req = req.clone({
       setHeaders: {
         Authorization: 'Mock ' + JSON.stringify({ roles: auth.roles() }),
-      }
+      },
     });
   }
   return next(req);

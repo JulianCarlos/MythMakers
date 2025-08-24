@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -9,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   protected form: FormGroup;
@@ -19,11 +24,11 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
   }
 
@@ -35,10 +40,14 @@ export class LoginComponent {
       return;
     }
 
-    const { username, password } = this.form.value as { username: string; password: string };
+    const { username, password } = this.form.value as {
+      username: string;
+      password: string;
+    };
 
     if (this.authService.login(username, password)) {
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/overview';
+      const returnUrl =
+        this.route.snapshot.queryParamMap.get('returnUrl') || '/overview';
       this.router.navigateByUrl(returnUrl);
     } else {
       this.loginError = 'Invalid username or password';

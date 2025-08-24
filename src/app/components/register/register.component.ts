@@ -5,7 +5,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
   ValidationErrors,
-  Validators
+  Validators,
 } from '@angular/forms';
 
 @Component({
@@ -13,7 +13,7 @@ import {
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   protected form: FormGroup;
@@ -24,9 +24,9 @@ export class RegisterComponent {
         username: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(8)]],
-        confirmPassword: ['', Validators.required]
+        confirmPassword: ['', Validators.required],
       },
-      { validators: this.matchPasswords('password', 'confirmPassword') }
+      { validators: this.matchPasswords('password', 'confirmPassword') },
     );
   }
 
@@ -34,7 +34,9 @@ export class RegisterComponent {
     return (group: AbstractControl): ValidationErrors | null => {
       const pass = group.get(passKey)?.value;
       const confirm = group.get(confirmKey)?.value;
-      return pass && confirm && pass !== confirm ? { passwordsMismatch: true } : null;
+      return pass && confirm && pass !== confirm
+        ? { passwordsMismatch: true }
+        : null;
     };
   }
 

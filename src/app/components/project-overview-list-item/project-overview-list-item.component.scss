@@ -10,10 +10,10 @@
   background: transparent;
   border: none;
 
-  &:hover { 
-    box-shadow: none; 
-    transform: none; 
-    background: var(--btn-hover-bg); 
+  &:hover {
+    box-shadow: none;
+    transform: none;
+    background: var(--btn-hover-bg);
   }
 
   .project-overview-list-item-name {
@@ -24,9 +24,9 @@
     min-width: 0;
     cursor: pointer;
 
-    p { 
-      margin: 0; 
-      padding: 10px; 
+    p {
+      margin: 0;
+      padding: 10px;
     }
   }
 }

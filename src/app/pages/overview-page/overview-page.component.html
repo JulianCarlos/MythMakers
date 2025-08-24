@@ -5,7 +5,8 @@
       <button
         class="btn btn--icon btn--primary"
         (click)="onAddProject()"
-        aria-label="Add project">
+        aria-label="Add project"
+      >
         <mat-icon fontIcon="add"></mat-icon>
       </button>
     </div>
@@ -14,15 +15,16 @@
       cdkDropList
       [cdkDropListData]="(projects$ | async) ?? []"
       (cdkDropListDropped)="drop($event)"
-      class="project-overview-list-container">
-
+      class="project-overview-list-container"
+    >
       @for (project of (projects$ | async) ?? []; track project.id) {
         <app-project-overview-list-item
           cdkDrag
           [project]="project"
           (rename)="onEditProject(project)"
           (delete)="onDeleteProject(project)"
-          (open)="onProjectSelected(project)">
+          (open)="onProjectSelected(project)"
+        >
         </app-project-overview-list-item>
       }
     </div>

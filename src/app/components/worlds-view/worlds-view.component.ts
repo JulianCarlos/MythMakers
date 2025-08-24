@@ -10,7 +10,7 @@ import { ViewListComponent } from '../../core/view-list/view-list.component';
   standalone: true,
   imports: [CommonModule, ViewListComponent],
   templateUrl: './worlds-view.component.html',
-  styleUrls: ['./worlds-view.component.scss']
+  styleUrls: ['./worlds-view.component.scss'],
 })
 export class WorldsViewComponent {
   private modal = inject(ModalService);
@@ -31,7 +31,7 @@ export class WorldsViewComponent {
     if (!q) return this.worlds;
 
     const needle = normalize(q);
-    return this.worlds.filter(w => normalize(w.name ?? '').includes(needle));
+    return this.worlds.filter((w) => normalize(w.name ?? '').includes(needle));
   }
 
   idOf = (w: World) => w.id;
@@ -39,8 +39,9 @@ export class WorldsViewComponent {
   onSelectWorld = (id: string) => this.openWorld.emit(id);
   onRemoveWorld = (id: string) => this.removeWorldId.emit(id);
   onAddWorld = () => {
-    this.modal.openTextPrompt({ title: 'New world', placeholder: 'Enter world name' })
-      .subscribe(value => {
+    this.modal
+      .openTextPrompt({ title: 'New world', placeholder: 'Enter world name' })
+      .subscribe((value) => {
         const trimmed = value?.trim();
         if (trimmed) this.addWorldName.emit(trimmed);
       });

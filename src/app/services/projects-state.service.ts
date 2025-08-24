@@ -22,9 +22,27 @@ export class ProjectsStateService {
   seedDemoIfEmpty(): void {
     if (this._projects$.value.length === 0) {
       this._projects$.next([
-        { id: '0', name: 'Project Alpha', worlds: [], cities: [], characters: [] },
-        { id: '1', name: 'Project Beta',  worlds: [], cities: [], characters: [] },
-        { id: '2', name: 'Project Gamma', worlds: [], cities: [], characters: [] }
+        {
+          id: '0',
+          name: 'Project Alpha',
+          worlds: [],
+          cities: [],
+          characters: [],
+        },
+        {
+          id: '1',
+          name: 'Project Beta',
+          worlds: [],
+          cities: [],
+          characters: [],
+        },
+        {
+          id: '2',
+          name: 'Project Gamma',
+          worlds: [],
+          cities: [],
+          characters: [],
+        },
       ]);
     }
   }
@@ -34,23 +52,35 @@ export class ProjectsStateService {
   }
 
   addProject(name: string): Project {
-    const project: Project = { id: genId(), name, worlds: [], cities: [], characters: [] };
+    const project: Project = {
+      id: genId(),
+      name,
+      worlds: [],
+      cities: [],
+      characters: [],
+    };
     this._projects$.next([project, ...this._projects$.value]);
     return project;
   }
 
   upsert(project: Project): void {
     const ps = this._projects$.value;
-    const i = ps.findIndex(x => x.id === project.id);
-    this._projects$.next(i === -1 ? [project, ...ps] : ps.map(x => (x.id === project.id ? project : x)));
+    const i = ps.findIndex((x) => x.id === project.id);
+    this._projects$.next(
+      i === -1
+        ? [project, ...ps]
+        : ps.map((x) => (x.id === project.id ? project : x)),
+    );
   }
 
   renameProject(id: string, name: string): void {
-    this._projects$.next(this._projects$.value.map(p => (p.id === id ? { ...p, name } : p)));
+    this._projects$.next(
+      this._projects$.value.map((p) => (p.id === id ? { ...p, name } : p)),
+    );
   }
 
   deleteProject(id: string): void {
-    this._projects$.next(this._projects$.value.filter(p => p.id !== id));
+    this._projects$.next(this._projects$.value.filter((p) => p.id !== id));
   }
 
   /** ⬇️ New: reorder projects and emit */
@@ -64,16 +94,25 @@ export class ProjectsStateService {
     this._projects$.next(mutator(this._projects$.value));
   }
 
-  private updateProject(projectId: string, mutator: (p: Project) => Project): void {
-    this.updateProjects(ps => ps.map(p => (p.id === projectId ? mutator(p) : p)));
+  private updateProject(
+    projectId: string,
+    mutator: (p: Project) => Project,
+  ): void {
+    this.updateProjects((ps) =>
+      ps.map((p) => (p.id === projectId ? mutator(p) : p)),
+    );
   }
 
-  private buildEntity(projectId: string, key: EntityKey, input: BaseInput): World | City | Character {
+  private buildEntity(
+    projectId: string,
+    key: EntityKey,
+    input: BaseInput,
+  ): World | City | Character {
     const base = {
       id: genId(),
       name: input.name,
       description: input.description ?? '',
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     if (key === 'characters') {
@@ -83,12 +122,16 @@ export class ProjectsStateService {
     return { ...base, projectId } as World | City;
   }
 
-  addEntity(projectId: string, key: EntityKey, input: BaseInput): World | City | Character {
+  addEntity(
+    projectId: string,
+    key: EntityKey,
+    input: BaseInput,
+  ): World | City | Character {
     const entity = this.buildEntity(projectId, key, input);
 
-    this.updateProject(projectId, p => ({
+    this.updateProject(projectId, (p) => ({
       ...p,
-      [key]: [...(p[key] ?? []), entity] as Project[typeof key]
+      [key]: [...(p[key] ?? []), entity] as Project[typeof key],
     }));
 
     return entity;

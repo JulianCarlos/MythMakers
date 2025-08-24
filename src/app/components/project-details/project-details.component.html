@@ -3,38 +3,46 @@
     @if (project$ | async; as project) {
       <div class="project-details-header">
         <h1>{{ project.name }}</h1>
-        <input type="search" id="siteSearch" name="q" formControlName="siteSearch" />
+        <input
+          type="search"
+          id="siteSearch"
+          name="q"
+          formControlName="siteSearch"
+        />
       </div>
-      <br>
-      
+      <br />
+
       <app-worlds-view
         [project]="project"
         [searchInput]="searchInput"
         (openWorld)="openWorld($event)"
-        (addWorldName)="addWorld(project, $event)">
+        (addWorldName)="addWorld(project, $event)"
+      >
       </app-worlds-view>
 
       <app-countries-view
         [project]="project"
         [searchInput]="searchInput"
         (openCountry)="openCountry($event)"
-        (addCountryName)="addCountry(project, $event)">
+        (addCountryName)="addCountry(project, $event)"
+      >
       </app-countries-view>
 
       <app-cities-view
         [project]="project"
         [searchInput]="searchInput"
         (openCity)="openCity($event)"
-        (addCityName)="addCity(project, $event)">
+        (addCityName)="addCity(project, $event)"
+      >
       </app-cities-view>
 
       <app-characters-view
         [project]="project"
         [searchInput]="searchInput"
         (openCharacter)="openCharacter($event)"
-        (addCharacterName)="addCharacter(project, $event)">
+        (addCharacterName)="addCharacter(project, $event)"
+      >
       </app-characters-view>
     }
   </div>
 </form>
-

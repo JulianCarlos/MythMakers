@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,11 +29,11 @@ export class ProjectOverviewListItemComponent {
     this.open.emit(this.project);
   }
 
-  protected onEdit() { 
-    this.rename.emit(this.project); 
+  protected onEdit() {
+    this.rename.emit(this.project);
   }
 
-  protected onDelete() { 
-    this.delete.emit(this.project); 
+  protected onDelete() {
+    this.delete.emit(this.project);
   }
 }

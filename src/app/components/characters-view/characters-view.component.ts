@@ -9,7 +9,7 @@ import { Character } from '../../models/character';
   standalone: true,
   imports: [ViewListComponent],
   templateUrl: './characters-view.component.html',
-  styleUrl: './characters-view.component.scss'
+  styleUrl: './characters-view.component.scss',
 })
 export class CharactersViewComponent {
   private modal = inject(ModalService);
@@ -30,7 +30,9 @@ export class CharactersViewComponent {
     if (!q) return this.characters;
 
     const needle = normalize(q);
-    return this.characters.filter(w => normalize(w.name ?? '').includes(needle));
+    return this.characters.filter((w) =>
+      normalize(w.name ?? '').includes(needle),
+    );
   }
 
   idOf = (c: Character) => c.id;
@@ -38,8 +40,12 @@ export class CharactersViewComponent {
   onSelectCharacter = (id: string) => this.openCharacter.emit(id);
   onRemoveCharacter = (id: string) => this.removeCharacterId.emit(id);
   onAddCharacter = () => {
-    this.modal.openTextPrompt({ title: 'New character', placeholder: 'Enter character name' })
-      .subscribe(value => {
+    this.modal
+      .openTextPrompt({
+        title: 'New character',
+        placeholder: 'Enter character name',
+      })
+      .subscribe((value) => {
         const trimmed = value?.trim();
         if (trimmed) this.addCharacterName.emit(trimmed);
       });

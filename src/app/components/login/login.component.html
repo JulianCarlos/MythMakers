@@ -9,7 +9,12 @@
       formControlName="username"
       autocomplete="username"
     />
-    <div *ngIf="form.controls['username'].touched && form.controls['username'].invalid" class="error">
+    <div
+      *ngIf="
+        form.controls['username'].touched && form.controls['username'].invalid
+      "
+      class="error"
+    >
       Username is required
     </div>
 
@@ -19,7 +24,12 @@
       formControlName="password"
       autocomplete="current-password"
     />
-    <div *ngIf="form.controls['password'].touched && form.controls['password'].invalid" class="error">
+    <div
+      *ngIf="
+        form.controls['password'].touched && form.controls['password'].invalid
+      "
+      class="error"
+    >
       Password is required
     </div>
 
@@ -27,6 +37,12 @@
       {{ loginError }}
     </div>
 
-    <button class="btn btn--primary btn--sm" type="submit" [disabled]="form.invalid">Login</button>
+    <button
+      class="btn btn--primary btn--sm"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      Login
+    </button>
   </div>
 </form>

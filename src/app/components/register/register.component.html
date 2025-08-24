@@ -3,23 +3,11 @@
     <h2>Create Account</h2>
     <p>Sign up to get started</p>
 
-    <input
-      type="text"
-      placeholder="Username"
-      formControlName="username"
-    />
+    <input type="text" placeholder="Username" formControlName="username" />
 
-    <input
-      type="email"
-      placeholder="Email"
-      formControlName="email"
-    />
+    <input type="email" placeholder="Email" formControlName="email" />
 
-    <input
-      type="password"
-      placeholder="Password"
-      formControlName="password"
-    />
+    <input type="password" placeholder="Password" formControlName="password" />
 
     <input
       type="password"
@@ -27,6 +15,12 @@
       formControlName="confirmPassword"
     />
 
-    <button class="btn btn--primary btn--sm" type="submit" [disabled]="form.invalid">Login</button>
+    <button
+      class="btn btn--primary btn--sm"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      Login
+    </button>
   </div>
 </form>

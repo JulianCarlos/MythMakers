@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,17 +15,25 @@ import { WorldsViewComponent } from '../worlds-view/worlds-view.component';
 import { ProjectsStateService } from '../../services/projects-state.service';
 import { CitiesViewComponent } from '../cities-view/cities-view.component';
 import { CharactersViewComponent } from '../characters-view/characters-view.component';
-import { CountriesViewComponent } from "../countries-view/countries-view.component";
+import { CountriesViewComponent } from '../countries-view/countries-view.component';
 
 type EntityKey = 'worlds' | 'countries' | 'cities' | 'characters';
 
 @Component({
   selector: 'app-project-details',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AsyncPipe, WorldsViewComponent, CitiesViewComponent, CharactersViewComponent, CountriesViewComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    WorldsViewComponent,
+    CitiesViewComponent,
+    CharactersViewComponent,
+    CountriesViewComponent,
+  ],
   templateUrl: './project-details.component.html',
   styleUrls: ['./project-details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectDetailsComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
@@ -33,10 +47,10 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
 
   project$ = combineLatest([
     this.state.projects$,
-    this.route.paramMap.pipe(map(p => p.get('projectId')))
+    this.route.paramMap.pipe(map((p) => p.get('projectId'))),
   ]).pipe(
-    map(([projects, id]) => projects.find(p => p.id === id) ?? null),
-    shareReplay({ bufferSize: 1, refCount: true })
+    map(([projects, id]) => projects.find((p) => p.id === id) ?? null),
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   ngOnInit(): void {
@@ -44,10 +58,10 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
       siteSearch: [''],
     });
 
-    this.form.get('siteSearch')!
-      .valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
+    this.form
+      .get('siteSearch')!
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
         this.searchInput = (value ?? '').toString();
       });
   }
@@ -63,7 +77,10 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
     this.state.addEntity(project.id, key, { name: trimmed, description: '' });
   }
 
-  private open(path: 'world' | 'country' | 'city' | 'character', id: string): void {
+  private open(
+    path: 'world' | 'country' | 'city' | 'character',
+    id: string,
+  ): void {
     this.router.navigate([path, id], { relativeTo: this.route });
   }
 

@@ -1,10 +1,10 @@
-import { City } from "./city";
+import { City } from './city';
 
 export interface World {
-    id: string;
-    name?: string;
-    description?: string;
-    cities?: City[];
-    projectId: string;
-    createdAt: Date;
+  id: string;
+  name?: string;
+  description?: string;
+  cities?: City[];
+  projectId: string;
+  createdAt: Date;
 }

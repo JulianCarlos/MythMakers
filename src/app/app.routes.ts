@@ -13,18 +13,40 @@ import { CharacterDetailsComponent } from './components/character-details/charac
 import { CountryDetailsComponent } from './components/country-details/country-details.component';
 
 export const routes: Routes = [
-  { path: 'login', title: 'Login', component: LoginPageComponent, canMatch: [redirectLoggedIn] },
-  { path: 'register', title: 'Register', component: RegisterPageComponent, canMatch: [redirectLoggedIn] },
+  {
+    path: 'login',
+    title: 'Login',
+    component: LoginPageComponent,
+    canMatch: [redirectLoggedIn],
+  },
+  {
+    path: 'register',
+    title: 'Register',
+    component: RegisterPageComponent,
+    canMatch: [redirectLoggedIn],
+  },
   {
     path: 'overview',
     component: OverviewPageComponent,
     canMatch: [authMatch],
     children: [
       { path: 'project/:projectId', component: ProjectDetailsComponent },
-      { path: 'project/:projectId/world/:worldId', component: WorldDetailsComponent },
-      { path: 'project/:projectId/country/:countryId', component: CountryDetailsComponent },
-      { path: 'project/:projectId/city/:cityId', component: CityDetailsComponent },
-      { path: 'project/:projectId/character/:characterId', component: CharacterDetailsComponent },
+      {
+        path: 'project/:projectId/world/:worldId',
+        component: WorldDetailsComponent,
+      },
+      {
+        path: 'project/:projectId/country/:countryId',
+        component: CountryDetailsComponent,
+      },
+      {
+        path: 'project/:projectId/city/:cityId',
+        component: CityDetailsComponent,
+      },
+      {
+        path: 'project/:projectId/character/:characterId',
+        component: CharacterDetailsComponent,
+      },
       { path: '', pathMatch: 'full', redirectTo: 'project/0' },
     ],
   },

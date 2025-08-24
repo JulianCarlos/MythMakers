@@ -1,0 +1,27 @@
+generatorName: typescript-angular
+inputSpec: src/openapi/openapi.json
+outputDir: src/app/api
+additionalProperties:
+  # Angular & DI
+  providedIn: root
+  ngVersion: 19.0.0
+
+  # Models & typing quality
+  withInterfaces: true
+  stringEnums: true
+  enumPropertyNaming: UPPERCASE
+  modelPropertyNaming: original
+  fileNaming: kebab-case
+  useSingleRequestParameter: true
+  serviceSuffix: Api
+  queryParamObjectFormat: dot  # better support for complex query params
+  supportsES6: true
+
+  # API surface ergonomics
+  useRxJS7: true
+  nullableFields: true
+  prependFormOrBodyParameters: false
+
+# Optional—but often great:
+# globalProperties:
+#   skipFormModel: true
