@@ -10,16 +10,16 @@ import { RequestBuilder } from '../../request-builder';
 
 import { Project } from '../../models/project';
 
-export interface ProjectGet$Json$Params {
+export interface ProjectGet$Params {
 }
 
-export function projectGet$Json(http: HttpClient, rootUrl: string, params?: ProjectGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
-  const rb = new RequestBuilder(rootUrl, projectGet$Json.PATH, 'get');
+export function projectGet(http: HttpClient, rootUrl: string, params?: ProjectGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
+  const rb = new RequestBuilder(rootUrl, projectGet.PATH, 'get');
   if (params) {
   }
 
   return http.request(
-    rb.build({ responseType: 'json', accept: 'text/json', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
@@ -28,4 +28,4 @@ export function projectGet$Json(http: HttpClient, rootUrl: string, params?: Proj
   );
 }
 
-projectGet$Json.PATH = '/Project';
+projectGet.PATH = '/Project';
