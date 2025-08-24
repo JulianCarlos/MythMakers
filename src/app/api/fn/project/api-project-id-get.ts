@@ -10,12 +10,14 @@ import { RequestBuilder } from '../../request-builder';
 
 import { Project } from '../../models/project';
 
-export interface ProjectGet$Params {
+export interface ApiProjectIdGet$Params {
+  id: number;
 }
 
-export function projectGet(http: HttpClient, rootUrl: string, params?: ProjectGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
-  const rb = new RequestBuilder(rootUrl, projectGet.PATH, 'get');
+export function apiProjectIdGet(http: HttpClient, rootUrl: string, params: ApiProjectIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Project>> {
+  const rb = new RequestBuilder(rootUrl, apiProjectIdGet.PATH, 'get');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -23,9 +25,9 @@ export function projectGet(http: HttpClient, rootUrl: string, params?: ProjectGe
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Array<Project>>;
+      return r as StrictHttpResponse<Project>;
     })
   );
 }
 
-projectGet.PATH = '/Project';
+apiProjectIdGet.PATH = '/api/Project/{id}';

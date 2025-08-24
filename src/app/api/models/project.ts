@@ -9,5 +9,6 @@ export interface Project {
   cities?: Array<City> | null;
   countries?: Array<Country> | null;
   id?: number;
+  rowVersion?: string;
   worlds?: Array<World> | null;
 }

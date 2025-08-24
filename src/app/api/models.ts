@@ -4,5 +4,6 @@
 
 export type { City } from './models/city';
 export type { Country } from './models/country';
+export type { ProblemDetails } from './models/problem-details';
 export type { Project } from './models/project';
 export type { World } from './models/world';

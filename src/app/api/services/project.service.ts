@@ -11,11 +11,11 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { apiProjectGet } from '../fn/project/api-project-get';
+import { ApiProjectGet$Params } from '../fn/project/api-project-get';
+import { apiProjectIdGet } from '../fn/project/api-project-id-get';
+import { ApiProjectIdGet$Params } from '../fn/project/api-project-id-get';
 import { Project } from '../models/project';
-import { projectGet } from '../fn/project/project-get';
-import { ProjectGet$Params } from '../fn/project/project-get';
-import { projectIdGet } from '../fn/project/project-id-get';
-import { ProjectIdGet$Params } from '../fn/project/project-id-get';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService extends BaseService {
@@ -23,53 +23,53 @@ export class ProjectService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `projectGet()` */
-  static readonly ProjectGetPath = '/Project';
+  /** Path part for operation `apiProjectGet()` */
+  static readonly ApiProjectGetPath = '/api/Project';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `projectGet()` instead.
+   * To access only the response body, use `apiProjectGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  projectGet$Response(params?: ProjectGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
-    return projectGet(this.http, this.rootUrl, params, context);
+  apiProjectGet$Response(params?: ApiProjectGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
+    return apiProjectGet(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `projectGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiProjectGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  projectGet(params?: ProjectGet$Params, context?: HttpContext): Observable<Array<Project>> {
-    return this.projectGet$Response(params, context).pipe(
+  apiProjectGet(params?: ApiProjectGet$Params, context?: HttpContext): Observable<Array<Project>> {
+    return this.apiProjectGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Array<Project>>): Array<Project> => r.body)
     );
   }
 
-  /** Path part for operation `projectIdGet()` */
-  static readonly ProjectIdGetPath = '/Project/{id}';
+  /** Path part for operation `apiProjectIdGet()` */
+  static readonly ApiProjectIdGetPath = '/api/Project/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `projectIdGet()` instead.
+   * To access only the response body, use `apiProjectIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  projectIdGet$Response(params: ProjectIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
-    return projectIdGet(this.http, this.rootUrl, params, context);
+  apiProjectIdGet$Response(params: ApiProjectIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Project>> {
+    return apiProjectIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `projectIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiProjectIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  projectIdGet(params: ProjectIdGet$Params, context?: HttpContext): Observable<Array<Project>> {
-    return this.projectIdGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<Project>>): Array<Project> => r.body)
+  apiProjectIdGet(params: ApiProjectIdGet$Params, context?: HttpContext): Observable<Project> {
+    return this.apiProjectIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Project>): Project => r.body)
     );
   }
 

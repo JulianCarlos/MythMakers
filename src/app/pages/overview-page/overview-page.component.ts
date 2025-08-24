@@ -14,6 +14,7 @@ import { ProjectsStateService } from '../../services/projects-state.service';
 import { AsyncPipe } from '@angular/common';
 import { first, take } from 'rxjs/operators';
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { ProjectService } from '@api/services';
 
 @Component({
   selector: 'app-overview-page',
@@ -35,10 +36,9 @@ export class OverviewPageComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private state = inject(ProjectsStateService);
+  private modal= inject(ModalService)
 
   projects$ = this.state.projects$;
-
-  constructor(private modal: ModalService) {}
 
   ngOnInit() {
     this.state.seedDemoIfEmpty();
