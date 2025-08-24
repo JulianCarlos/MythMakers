@@ -1,0 +1,17 @@
+{
+  "input": "src/openapi/openapi.json",
+  "output": "src/app/api",
+
+  "removeStaleFiles": true,
+  "barrel": true,
+
+  "providedInRoot": true,
+  "serviceSuffix": "Service",
+  "fileNaming": "kebab-case",
+
+  "sortParams": "alpha",
+  "exportApis": true,
+  "modelIndex": true,
+
+  "enumStyle": "enum"
+}
