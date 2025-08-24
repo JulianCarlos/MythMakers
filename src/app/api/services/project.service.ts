@@ -16,6 +16,10 @@ import { projectGet$Json } from '../fn/project/project-get-json';
 import { ProjectGet$Json$Params } from '../fn/project/project-get-json';
 import { projectGet$Plain } from '../fn/project/project-get-plain';
 import { ProjectGet$Plain$Params } from '../fn/project/project-get-plain';
+import { projectIdGet$Json } from '../fn/project/project-id-get-json';
+import { ProjectIdGet$Json$Params } from '../fn/project/project-id-get-json';
+import { projectIdGet$Plain } from '../fn/project/project-id-get-plain';
+import { ProjectIdGet$Plain$Params } from '../fn/project/project-id-get-plain';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService extends BaseService {
@@ -66,6 +70,53 @@ export class ProjectService extends BaseService {
    */
   projectGet$Json(params?: ProjectGet$Json$Params, context?: HttpContext): Observable<Array<Project>> {
     return this.projectGet$Json$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<Project>>): Array<Project> => r.body)
+    );
+  }
+
+  /** Path part for operation `projectIdGet()` */
+  static readonly ProjectIdGetPath = '/Project/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `projectIdGet$Plain()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  projectIdGet$Plain$Response(params: ProjectIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
+    return projectIdGet$Plain(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `projectIdGet$Plain$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  projectIdGet$Plain(params: ProjectIdGet$Plain$Params, context?: HttpContext): Observable<Array<Project>> {
+    return this.projectIdGet$Plain$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<Project>>): Array<Project> => r.body)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `projectIdGet$Json()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  projectIdGet$Json$Response(params: ProjectIdGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
+    return projectIdGet$Json(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `projectIdGet$Json$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  projectIdGet$Json(params: ProjectIdGet$Json$Params, context?: HttpContext): Observable<Array<Project>> {
+    return this.projectIdGet$Json$Response(params, context).pipe(
       map((r: StrictHttpResponse<Array<Project>>): Array<Project> => r.body)
     );
   }

@@ -1,5 +1,5 @@
 {
-  "input": "src/openapi/openapi.json",
+  "input": "https://localhost:7039/swagger/v1/swagger.json",
   "output": "src/app/api",
 
   "removeStaleFiles": true,
