@@ -6,7 +6,7 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { ProjectService } from './services/project.service';
+import { ProjectsService } from './services/projects.service';
 
 /**
  * Module that provides all services and configuration.
@@ -16,7 +16,7 @@ import { ProjectService } from './services/project.service';
   exports: [],
   declarations: [],
   providers: [
-    ProjectService,
+    ProjectsService,
     ApiConfiguration
   ],
 })
