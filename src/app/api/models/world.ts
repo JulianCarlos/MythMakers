@@ -6,5 +6,4 @@ export interface World {
   description?: string | null;
   id?: number;
   name?: string | null;
-  projectId?: number;
 }

@@ -6,5 +6,4 @@ export interface City {
   description?: string | null;
   id?: number;
   name?: string | null;
-  projectId?: number;
 }

@@ -6,5 +6,4 @@ export interface Country {
   description?: string | null;
   id?: number;
   name?: string | null;
-  projectId?: number;
 }

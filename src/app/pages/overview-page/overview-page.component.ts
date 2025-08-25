@@ -14,7 +14,6 @@ import { ProjectsStateService } from '../../services/projects-state.service';
 import { AsyncPipe } from '@angular/common';
 import { first, take } from 'rxjs/operators';
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { ProjectService } from '@api/services';
 
 @Component({
   selector: 'app-overview-page',
