@@ -19,7 +19,7 @@ import { apiProjectsIdGet } from '../fn/projects/api-projects-id-get';
 import { ApiProjectsIdGet$Params } from '../fn/projects/api-projects-id-get';
 import { apiProjectsPost } from '../fn/projects/api-projects-post';
 import { ApiProjectsPost$Params } from '../fn/projects/api-projects-post';
-import { Project } from '../models/project';
+import { ProjectDto } from '../models/project-dto';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectsService extends BaseService {
@@ -36,7 +36,7 @@ export class ProjectsService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiProjectsGet$Response(params?: ApiProjectsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
+  apiProjectsGet$Response(params?: ApiProjectsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<ProjectDto>>> {
     return apiProjectsGet(this.http, this.rootUrl, params, context);
   }
 
@@ -46,9 +46,9 @@ export class ProjectsService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiProjectsGet(params?: ApiProjectsGet$Params, context?: HttpContext): Observable<Array<Project>> {
+  apiProjectsGet(params?: ApiProjectsGet$Params, context?: HttpContext): Observable<Array<ProjectDto>> {
     return this.apiProjectsGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<Project>>): Array<Project> => r.body)
+      map((r: StrictHttpResponse<Array<ProjectDto>>): Array<ProjectDto> => r.body)
     );
   }
 
@@ -61,7 +61,7 @@ export class ProjectsService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiProjectsPost$Response(params?: ApiProjectsPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Project>> {
+  apiProjectsPost$Response(params?: ApiProjectsPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ProjectDto>> {
     return apiProjectsPost(this.http, this.rootUrl, params, context);
   }
 
@@ -71,9 +71,9 @@ export class ProjectsService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiProjectsPost(params?: ApiProjectsPost$Params, context?: HttpContext): Observable<Project> {
+  apiProjectsPost(params?: ApiProjectsPost$Params, context?: HttpContext): Observable<ProjectDto> {
     return this.apiProjectsPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Project>): Project => r.body)
+      map((r: StrictHttpResponse<ProjectDto>): ProjectDto => r.body)
     );
   }
 
@@ -86,7 +86,7 @@ export class ProjectsService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiProjectsIdGet$Response(params: ApiProjectsIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Project>> {
+  apiProjectsIdGet$Response(params: ApiProjectsIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ProjectDto>> {
     return apiProjectsIdGet(this.http, this.rootUrl, params, context);
   }
 
@@ -96,9 +96,9 @@ export class ProjectsService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiProjectsIdGet(params: ApiProjectsIdGet$Params, context?: HttpContext): Observable<Project> {
+  apiProjectsIdGet(params: ApiProjectsIdGet$Params, context?: HttpContext): Observable<ProjectDto> {
     return this.apiProjectsIdGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Project>): Project => r.body)
+      map((r: StrictHttpResponse<ProjectDto>): ProjectDto => r.body)
     );
   }
 

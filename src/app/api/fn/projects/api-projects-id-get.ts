@@ -8,13 +8,13 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { Project } from '../../models/project';
+import { ProjectDto } from '../../models/project-dto';
 
 export interface ApiProjectsIdGet$Params {
   id: number;
 }
 
-export function apiProjectsIdGet(http: HttpClient, rootUrl: string, params: ApiProjectsIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Project>> {
+export function apiProjectsIdGet(http: HttpClient, rootUrl: string, params: ApiProjectsIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ProjectDto>> {
   const rb = new RequestBuilder(rootUrl, apiProjectsIdGet.PATH, 'get');
   if (params) {
     rb.path('id', params.id, {});
@@ -25,7 +25,7 @@ export function apiProjectsIdGet(http: HttpClient, rootUrl: string, params: ApiP
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Project>;
+      return r as StrictHttpResponse<ProjectDto>;
     })
   );
 }

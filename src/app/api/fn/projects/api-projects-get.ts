@@ -8,12 +8,12 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { Project } from '../../models/project';
+import { ProjectDto } from '../../models/project-dto';
 
 export interface ApiProjectsGet$Params {
 }
 
-export function apiProjectsGet(http: HttpClient, rootUrl: string, params?: ApiProjectsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<Project>>> {
+export function apiProjectsGet(http: HttpClient, rootUrl: string, params?: ApiProjectsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<ProjectDto>>> {
   const rb = new RequestBuilder(rootUrl, apiProjectsGet.PATH, 'get');
   if (params) {
   }
@@ -23,7 +23,7 @@ export function apiProjectsGet(http: HttpClient, rootUrl: string, params?: ApiPr
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Array<Project>>;
+      return r as StrictHttpResponse<Array<ProjectDto>>;
     })
   );
 }
