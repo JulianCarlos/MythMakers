@@ -8,7 +8,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { Project } from '../../models/project';
+import { ProjectDto } from '@api/models';
 
 @Component({
   selector: 'app-project-overview-list-item',
@@ -19,11 +19,11 @@ import { Project } from '../../models/project';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectOverviewListItemComponent {
-  @Input() project?: Project;
+  @Input() project?: ProjectDto;
 
-  @Output() open = new EventEmitter<Project>();
-  @Output() rename = new EventEmitter<Project>();
-  @Output() delete = new EventEmitter<Project>();
+  @Output() open = new EventEmitter<ProjectDto>();
+  @Output() rename = new EventEmitter<ProjectDto>();
+  @Output() delete = new EventEmitter<ProjectDto>();
 
   protected onOpen() {
     this.open.emit(this.project);

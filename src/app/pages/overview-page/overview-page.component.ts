@@ -5,15 +5,16 @@ import {
   inject,
 } from '@angular/core';
 import { ProjectOverviewListItemComponent } from '../../components/project-overview-list-item/project-overview-list-item.component';
-import { Project } from '../../models/project';
+import { ProjectDto } from '../../api/models/project-dto';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ModalService } from '../../core/modal/modal.service';
 import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
-import { ProjectsStateService } from '../../services/projects-state.service';
+import { ProjectsService } from '../../api/services/projects.service';
 import { AsyncPipe } from '@angular/common';
-import { first, take } from 'rxjs/operators';
+import { take, first, switchMap } from 'rxjs/operators';
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-overview-page',
@@ -34,20 +35,27 @@ import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 export class OverviewPageComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private state = inject(ProjectsStateService);
-  private modal= inject(ModalService)
+  private modal = inject(ModalService);
+  private projectsService = inject(ProjectsService);
 
-  projects$ = this.state.projects$;
+  private _projects$ = new BehaviorSubject<ProjectDto[]>([]);
+  projects$ = this._projects$.asObservable();
 
   ngOnInit() {
-    this.state.seedDemoIfEmpty();
+    this.loadProjects();
+  }
 
-    const current = this.state.getSnapshot();
-    if (!this.route.firstChild && current.length > 0) {
-      this.router.navigate(['project', current[0].id], {
-        relativeTo: this.route,
-      });
-    }
+  private loadProjects() {
+    this.projectsService.apiProjectsGet().subscribe(projects => {
+      console.log('Loaded projects:', projects);
+
+      this._projects$.next(projects);
+      if (!this.route.firstChild && projects.length > 0) {
+        this.router.navigate(['project', projects[0].id], {
+          relativeTo: this.route,
+        });
+      }
+    });
   }
 
   onAddProject() {
@@ -61,29 +69,42 @@ export class OverviewPageComponent implements OnInit {
         const name = value?.trim();
         if (!name) return;
 
-        const project = this.state.addProject(name);
-        this.router.navigate(['project', project.id], {
-          relativeTo: this.route,
+        const newProject: ProjectDto = { id: 0, name };
+        this.projectsService.apiProjectsPost({ body: newProject }).subscribe(project => {
+          this.loadProjects();
+          this.router.navigate(['project', project.id], {
+            relativeTo: this.route,
+          });
         });
       });
   }
 
-  onEditProject(project: Project) {
-    this.modal
-      .openTextPrompt({
-        title: `Rename "${project.name}"`,
-        placeholder: 'Enter new name',
-        initialValue: project.name,
-      })
-      .pipe(take(1))
-      .subscribe((value) => {
-        const name = value?.trim();
-        if (!name) return;
-        this.state.renameProject(project.id, name);
-      });
-  }
+  onEditProject(project: ProjectDto) {
+  this.modal.openTextPrompt({
+    title: `Rename "${project.name}"`,
+    placeholder: 'Enter new name',
+    initialValue: project.name,
+  })
+  .pipe(take(1))
+  .subscribe(nameRaw => {
+    const name = nameRaw?.trim();
+    if (!name) return;
 
-  onDeleteProject(project: Project) {
+    this.projectsService.apiProjectsIdGet({ id: project.id }).pipe(
+      take(1),
+      switchMap(full => this.projectsService.apiProjectsPost({ body: { ...full, name } }))
+    ).subscribe(() => {
+      this.loadProjects();
+      this.router.navigate(['project', project.id], {
+        relativeTo: this.route,
+        queryParams: { refresh: Date.now() },
+        queryParamsHandling: 'merge',
+      });
+    });
+  });
+} 
+
+  onDeleteProject(project: ProjectDto) {
     this.modal
       .openConfirm({
         title: 'Delete project?',
@@ -96,24 +117,28 @@ export class OverviewPageComponent implements OnInit {
       .subscribe((confirmed) => {
         if (!confirmed) return;
 
-        this.state.deleteProject(project.id);
-
-        const remaining = this.state.getSnapshot();
-        if (remaining.length > 0) {
-          this.router.navigate(['project', remaining[0].id], {
-            relativeTo: this.route,
-          });
-        } else {
-          this.router.navigate(['./'], { relativeTo: this.route });
-        }
+        this.projectsService.apiProjectsIdDelete({ id: project.id }).subscribe(() => {
+          this.loadProjects();
+          const remaining = this._projects$.value;
+          if (remaining.length > 0) {
+            this.router.navigate(['project', remaining[0].id], {
+              relativeTo: this.route,
+            });
+          } else {
+            this.router.navigate(['./'], { relativeTo: this.route });
+          }
+        });
       });
   }
 
-  onProjectSelected(project: Project) {
+  onProjectSelected(project: ProjectDto) {
     this.router.navigate(['project', project.id], { relativeTo: this.route });
   }
 
-  drop(event: CdkDragDrop<Project[]>) {
-    this.state.reorderProjects(event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<ProjectDto[]>) {
+    const copy = [...this._projects$.value];
+    const [moved] = copy.splice(event.previousIndex, 1);
+    copy.splice(event.currentIndex, 0, moved);
+    this._projects$.next(copy);
   }
 }

@@ -1,8 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ModalService } from '../../core/modal/modal.service';
-import { Project } from '../../models/project';
-import { Country } from '../../models/country';
 import { ViewListComponent } from '../../core/view-list/view-list.component';
+import { CountryDto, ProjectDto } from '@api/models';
 
 @Component({
   selector: 'app-countries-view',
@@ -14,18 +13,18 @@ import { ViewListComponent } from '../../core/view-list/view-list.component';
 export class CountriesViewComponent {
   private modal = inject(ModalService);
 
-  @Input() project?: Project;
+  @Input() project?: ProjectDto;
   @Input() searchInput?: string;
 
-  @Output() openCountry = new EventEmitter<string>();
+  @Output() openCountry = new EventEmitter<number>();
   @Output() addCountryName = new EventEmitter<string>();
-  @Output() removeCountryId = new EventEmitter<string>();
+  @Output() removeCountryId = new EventEmitter<number>();
 
-  get countries(): readonly Country[] {
+  get countries(): readonly CountryDto[] {
     return this.project?.countries ?? [];
   }
 
-  get filteredCountries(): readonly Country[] {
+  get filteredCountries(): readonly CountryDto[] {
     const q = (this.searchInput ?? '').trim();
     if (!q) return this.countries;
 
@@ -35,10 +34,10 @@ export class CountriesViewComponent {
     );
   }
 
-  idOf = (w: Country) => w.id;
-  labelOf = (w: Country) => w.name ?? '';
-  onSelectCountry = (id: string) => this.openCountry.emit(id);
-  onRemoveCountry = (id: string) => this.removeCountryId.emit(id);
+  idOf = (w: CountryDto) => w.id;
+  labelOf = (w: CountryDto) => w.name ?? '';
+  onSelectCountry = (id: number) => this.openCountry.emit(id);
+  onRemoveCountry = (id: number) => this.removeCountryId.emit(id);
   onAddCountry = () => {
     this.modal
       .openTextPrompt({

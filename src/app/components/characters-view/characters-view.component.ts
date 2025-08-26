@@ -1,8 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ViewListComponent } from '../../core/view-list/view-list.component';
 import { ModalService } from '../../core/modal/modal.service';
-import { Project } from '../../models/project';
-import { Character } from '../../models/character';
+import { CharacterDto, ProjectDto } from '@api/models';
 
 @Component({
   selector: 'app-characters-view',
@@ -14,18 +13,18 @@ import { Character } from '../../models/character';
 export class CharactersViewComponent {
   private modal = inject(ModalService);
 
-  @Input() project?: Project;
+  @Input() project?: ProjectDto;
   @Input() searchInput?: string;
 
-  @Output() openCharacter = new EventEmitter<string>();
+  @Output() openCharacter = new EventEmitter<number>();
   @Output() addCharacterName = new EventEmitter<string>();
-  @Output() removeCharacterId = new EventEmitter<string>();
+  @Output() removeCharacterId = new EventEmitter<number>();
 
-  get characters(): readonly Character[] {
+  get characters(): readonly CharacterDto[] {
     return this.project?.characters ?? [];
   }
 
-  get filteredCharacters(): readonly Character[] {
+  get filteredCharacters(): readonly CharacterDto[] {
     const q = (this.searchInput ?? '').trim();
     if (!q) return this.characters;
 
@@ -35,10 +34,10 @@ export class CharactersViewComponent {
     );
   }
 
-  idOf = (c: Character) => c.id;
-  labelOf = (c: Character) => c.name ?? '';
-  onSelectCharacter = (id: string) => this.openCharacter.emit(id);
-  onRemoveCharacter = (id: string) => this.removeCharacterId.emit(id);
+  idOf = (c: CharacterDto) => c.id;
+  labelOf = (c: CharacterDto) => c.name ?? '';
+  onSelectCharacter = (id: number) => this.openCharacter.emit(id);
+  onRemoveCharacter = (id: number) => this.removeCharacterId.emit(id);
   onAddCharacter = () => {
     this.modal
       .openTextPrompt({

@@ -35,11 +35,11 @@ export class ViewListComponent {
 
   @Input({ required: true }) title!: string;
   @Input({ required: true }) items: ReadonlyArray<unknown> = [];
-  @Input({ required: true }) idOf!: (item: any) => string;
+  @Input({ required: true }) idOf!: (item: any) => number;
   @Input() labelOf: (item: any) => string = (i: any) =>
     i?.name ?? i?.title ?? '';
-  @Input() selectId!: (id: string) => void;
-  @Input() removeId!: (id: string) => void;
+  @Input() selectId!: (id: number) => void;
+  @Input() removeId!: (id: number) => void;
   @Input() addClick!: () => void;
 
   @Input() removeAriaLabel = 'Remove';

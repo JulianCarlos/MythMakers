@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { Project } from '../../models/project';
-import { World } from '../../models/world';
+import { ProjectDto } from '../../api/models/project-dto';
+import { WorldDto } from '../../api/models/world-dto';
 import { ModalService } from '../../core/modal/modal.service';
 import { ViewListComponent } from '../../core/view-list/view-list.component';
 
@@ -15,18 +15,18 @@ import { ViewListComponent } from '../../core/view-list/view-list.component';
 export class WorldsViewComponent {
   private modal = inject(ModalService);
 
-  @Input() project?: Project;
+  @Input() project?: ProjectDto;
   @Input() searchInput?: string;
 
-  @Output() openWorld = new EventEmitter<string>();
+  @Output() openWorld = new EventEmitter<number>();
   @Output() addWorldName = new EventEmitter<string>();
-  @Output() removeWorldId = new EventEmitter<string>();
+  @Output() removeWorldId = new EventEmitter<number>();
 
-  get worlds(): readonly World[] {
+  get worlds(): readonly WorldDto[] {
     return this.project?.worlds ?? [];
   }
 
-  get filteredWorlds(): readonly World[] {
+  get filteredWorlds(): readonly WorldDto[] {
     const q = (this.searchInput ?? '').trim();
     if (!q) return this.worlds;
 
@@ -34,10 +34,10 @@ export class WorldsViewComponent {
     return this.worlds.filter((w) => normalize(w.name ?? '').includes(needle));
   }
 
-  idOf = (w: World) => w.id;
-  labelOf = (w: World) => w.name ?? '';
-  onSelectWorld = (id: string) => this.openWorld.emit(id);
-  onRemoveWorld = (id: string) => this.removeWorldId.emit(id);
+  idOf = (w: WorldDto) => w.id;
+  labelOf = (w: WorldDto) => w.name ?? '';
+  onSelectWorld = (id: number) => this.openWorld.emit(id);
+  onRemoveWorld = (id: number) => this.removeWorldId.emit(id);
   onAddWorld = () => {
     this.modal
       .openTextPrompt({ title: 'New world', placeholder: 'Enter world name' })

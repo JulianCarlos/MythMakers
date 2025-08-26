@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { Project } from '../../models/project';
-import { City } from '../../models/city';
 import { ModalService } from '../../core/modal/modal.service';
 import { ViewListComponent } from '../../core/view-list/view-list.component';
+import { CityDto, ProjectDto } from '@api/models';
 
 @Component({
   selector: 'app-cities-view',
@@ -15,18 +14,18 @@ import { ViewListComponent } from '../../core/view-list/view-list.component';
 export class CitiesViewComponent {
   private modal = inject(ModalService);
 
-  @Input() project?: Project;
+  @Input() project?: ProjectDto;
   @Input() searchInput?: string;
 
-  @Output() openCity = new EventEmitter<string>();
+  @Output() openCity = new EventEmitter<number>();
   @Output() addCityName = new EventEmitter<string>();
-  @Output() removeCityId = new EventEmitter<string>();
+  @Output() removeCityId = new EventEmitter<number>();
 
-  get cities(): readonly City[] {
+  get cities(): readonly CityDto[] {
     return this.project?.cities ?? [];
   }
 
-  get filteredCities(): readonly City[] {
+  get filteredCities(): readonly CityDto[] {
     const q = (this.searchInput ?? '').trim();
     if (!q) return this.cities;
 
@@ -34,10 +33,10 @@ export class CitiesViewComponent {
     return this.cities.filter((w) => normalize(w.name ?? '').includes(needle));
   }
 
-  idOf = (c: City) => c.id;
-  labelOf = (c: City) => c.name ?? '';
-  onSelectCity = (id: string) => this.openCity.emit(id);
-  onRemoveCity = (id: string) => this.removeCityId.emit(id);
+  idOf = (c: CityDto) => c.id;
+  labelOf = (c: CityDto) => c.name ?? '';
+  onSelectCity = (id: number) => this.openCity.emit(id);
+  onRemoveCity = (id: number) => this.removeCityId.emit(id);
   onAddCity = () => {
     this.modal
       .openTextPrompt({ title: 'New city', placeholder: 'Enter city name' })

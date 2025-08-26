@@ -10,7 +10,7 @@ export interface ProjectDto {
   characters?: Array<CharacterDto> | null;
   cities?: Array<CityDto> | null;
   countries?: Array<CountryDto> | null;
-  id?: number;
+  id: number;
   name: string;
   sortOrder?: number;
   worlds?: Array<WorldDto> | null;
