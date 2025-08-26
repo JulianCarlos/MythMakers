@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ModalService } from '../../core/modal/modal.service';
 import { ViewListComponent } from '../../core/view-list/view-list.component';
 import { CountryDto, ProjectDto } from '@api/models';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-countries-view',
@@ -37,7 +38,22 @@ export class CountriesViewComponent {
   idOf = (w: CountryDto) => w.id;
   labelOf = (w: CountryDto) => w.name ?? '';
   onSelectCountry = (id: number) => this.openCountry.emit(id);
-  onRemoveCountry = (id: number) => this.removeCountryId.emit(id);
+  onRemoveCountry = (id: number) => {
+      this.modal
+        .openConfirm({
+          title: 'Delete project?',
+          message: `This will permanently remove the country.`,
+          confirmLabel: 'Delete',
+          cancelLabel: 'Cancel',
+          danger: true,
+        })
+        .pipe(first())
+        .subscribe((confirmed) => {
+          if (confirmed){
+            this.removeCountryId.emit(id);
+          }
+        });
+    };
   onAddCountry = () => {
     this.modal
       .openTextPrompt({

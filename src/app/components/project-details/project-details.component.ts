@@ -73,6 +73,17 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private remove(project: ProjectDto, key: EntityKey, id: number): void {
+    const updatedProject: ProjectDto = { ...project };
+    const arr = Array.isArray(updatedProject[key]) ? (updatedProject[key] as any[]) : [];
+    (updatedProject as any)[key] = arr.filter((e: any) => e?.id !== id);
+
+    this.projectsService.apiProjectsPost({ body: updatedProject }).subscribe(() => {
+      this.refresh$.next();
+    });
+  }
+
+
   private open(path: 'world' | 'country' | 'city' | 'character', id: number): void {
     this.router.navigate([path, id], { relativeTo: this.route });
   }
@@ -80,17 +91,29 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
   addWorld(project: ProjectDto, name: string): void {
     this.add(project, 'worlds', name);
   }
+  removeWorld(project: ProjectDto, worldId: number): void {
+    this.remove(project, 'worlds', worldId);
+  }
 
   addCountry(project: ProjectDto, name: string): void {
     this.add(project, 'countries', name);
+  }
+  removeCountry(project: ProjectDto, countryId: number): void {
+    this.remove(project, 'countries', countryId);
   }
 
   addCity(project: ProjectDto, name: string): void {
     this.add(project, 'cities', name);
   }
+  removeCity(project: ProjectDto, cityId: number): void {
+    this.remove(project, 'cities', cityId);
+  }
 
   addCharacter(project: ProjectDto, name: string): void {
     this.add(project, 'characters', name);
+  }
+  removeCharacter(project: ProjectDto, characterId: number): void {
+    this.remove(project, 'characters', characterId);
   }
 
   openWorld(worldId: number): void {

@@ -31,7 +31,7 @@ type MaybeNum = number | string;
 })
 export class ViewListComponent {
   @Input() canAdd = true;
-  @Input() canRemove = false;
+  @Input() canRemove = true;
 
   @Input({ required: true }) title!: string;
   @Input({ required: true }) items: ReadonlyArray<unknown> = [];

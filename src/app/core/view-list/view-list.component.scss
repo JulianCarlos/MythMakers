@@ -51,3 +51,16 @@
   margin-bottom: 10px;
   gap: 10px;
 }
+
+.delete {
+  position: absolute;
+  top: var(--remove-offset);
+  right: var(--remove-offset);
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}

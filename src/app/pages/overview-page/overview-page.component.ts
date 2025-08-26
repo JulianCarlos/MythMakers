@@ -47,8 +47,6 @@ export class OverviewPageComponent implements OnInit {
 
   private loadProjects() {
     this.projectsService.apiProjectsGet().subscribe(projects => {
-      console.log('Loaded projects:', projects);
-
       this._projects$.next(projects);
       if (!this.route.firstChild && projects.length > 0) {
         this.router.navigate(['project', projects[0].id], {

@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ViewListComponent } from '../../core/view-list/view-list.component';
 import { ModalService } from '../../core/modal/modal.service';
 import { CharacterDto, ProjectDto } from '@api/models';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-characters-view',
@@ -37,7 +38,22 @@ export class CharactersViewComponent {
   idOf = (c: CharacterDto) => c.id;
   labelOf = (c: CharacterDto) => c.name ?? '';
   onSelectCharacter = (id: number) => this.openCharacter.emit(id);
-  onRemoveCharacter = (id: number) => this.removeCharacterId.emit(id);
+  onRemoveCharacter = (id: number) => {
+      this.modal
+        .openConfirm({
+          title: 'Delete project?',
+          message: `This will permanently remove the character.`,
+          confirmLabel: 'Delete',
+          cancelLabel: 'Cancel',
+          danger: true,
+        })
+        .pipe(first())
+        .subscribe((confirmed) => {
+          if (confirmed){
+            this.removeCharacterId.emit(id);
+          }
+        });
+    };
   onAddCharacter = () => {
     this.modal
       .openTextPrompt({

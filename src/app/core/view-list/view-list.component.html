@@ -37,16 +37,25 @@
           {{ labelOf(item) }}
         </button>
 
-        @if (canRemove) {
-          <button
-            type="button"
-            [attr.aria-label]="removeAriaLabel"
-            class="entity-list__remove"
-            (click)="onRemove(item, $event)"
-          >
-            <mat-icon fontIcon="add"></mat-icon>
-          </button>
-        }
+        <button
+          [matMenuTriggerFor]="itemMenu"
+          type="button"
+          class="btn btn--icon btn--outline delete"
+          [attr.aria-label]="removeAriaLabel"
+        >
+          <mat-icon fontIcon="more_vert" aria-hidden="true"></mat-icon>
+        </button>
+
+          <mat-menu #itemMenu="matMenu" xPosition="after" yPosition="below">
+            <button mat-menu-item (click)="$event.stopPropagation();">
+              <mat-icon fontIcon="edit"></mat-icon>
+              <span>Edit</span>
+            </button>
+            <button mat-menu-item (click)="$event.stopPropagation(); onRemove(item)">
+              <mat-icon fontIcon="delete"></mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>
       </ng-template>
     </div>
   }

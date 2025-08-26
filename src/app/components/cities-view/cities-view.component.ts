@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { ModalService } from '../../core/modal/modal.service';
 import { ViewListComponent } from '../../core/view-list/view-list.component';
 import { CityDto, ProjectDto } from '@api/models';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-cities-view',
@@ -36,7 +37,22 @@ export class CitiesViewComponent {
   idOf = (c: CityDto) => c.id;
   labelOf = (c: CityDto) => c.name ?? '';
   onSelectCity = (id: number) => this.openCity.emit(id);
-  onRemoveCity = (id: number) => this.removeCityId.emit(id);
+  onRemoveCity = (id: number) => {
+      this.modal
+        .openConfirm({
+          title: 'Delete project?',
+          message: `This will permanently remove the city.`,
+          confirmLabel: 'Delete',
+          cancelLabel: 'Cancel',
+          danger: true,
+        })
+        .pipe(first())
+        .subscribe((confirmed) => {
+          if (confirmed){
+            this.removeCityId.emit(id);
+          }
+        });
+    };
   onAddCity = () => {
     this.modal
       .openTextPrompt({ title: 'New city', placeholder: 'Enter city name' })
