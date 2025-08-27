@@ -1,15 +1,17 @@
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, isDevMode } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
-import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
-import { authInterceptor } from './interceptors/auth-interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { environment } from 'environments/environment';
+import { provideRouter } from '@angular/router';
 import { ApiConfiguration } from '@api/api-configuration';
-import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
+import { provideState, provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { environment } from 'environments/environment';
+import { reducer } from 'store/reducers/project.reducer';
+import { routes } from './app.routes';
+import { authInterceptor } from './interceptors/auth-interceptor';
+import { ProjectEffects } from 'store/effects/project.effect';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +22,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     { provide: ApiConfiguration, useValue: { rootUrl: environment.apiUrl } },
     provideStore(),
-    provideEffects(),
+    provideState({ name: 'projects', reducer: reducer }),
+    provideEffects(ProjectEffects),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
 ],
 };

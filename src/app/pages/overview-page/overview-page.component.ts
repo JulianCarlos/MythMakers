@@ -1,20 +1,24 @@
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
   inject,
 } from '@angular/core';
-import { ProjectOverviewListItemComponent } from '../../components/project-overview-list-item/project-overview-list-item.component';
-import { ProjectDto } from '../../api/models/project-dto';
-import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { ModalService } from '../../core/modal/modal.service';
-import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
-import { ProjectsService } from '../../api/services/projects.service';
-import { AsyncPipe } from '@angular/common';
-import { take, first, switchMap } from 'rxjs/operators';
-import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { first, switchMap, take } from 'rxjs/operators';
+import { ProjectDto } from '../../api/models/project-dto';
+import { ProjectsService } from '../../api/services/projects.service';
+import { ProjectOverviewListItemComponent } from '../../components/project-overview-list-item/project-overview-list-item.component';
+import { ModalService } from '../../core/modal/modal.service';
+
+import { Store } from '@ngrx/store';
+import * as fromActions from 'store/actions/project.action';
+import * as fromSelectors from 'store/selectors/project.selector';
 
 @Component({
   selector: 'app-overview-page',
@@ -37,16 +41,15 @@ export class OverviewPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private modal = inject(ModalService);
   private projectsService = inject(ProjectsService);
+  private store = inject(Store);
 
   private _projects$ = new BehaviorSubject<ProjectDto[]>([]);
   projects$ = this._projects$.asObservable();
 
   ngOnInit() {
-    this.loadProjects();
-  }
+    this.store.dispatch(fromActions.LoadAllProjects());
 
-  private loadProjects() {
-    this.projectsService.apiProjectsGet().subscribe(projects => {
+    this.store.select(fromSelectors.getProjectsStateProjects).subscribe(projects => {
       this._projects$.next(projects);
       if (!this.route.firstChild && projects.length > 0) {
         this.router.navigate(['project', projects[0].id], {
@@ -69,7 +72,7 @@ export class OverviewPageComponent implements OnInit {
 
         const newProject: ProjectDto = { id: 0, name };
         this.projectsService.apiProjectsPost({ body: newProject }).subscribe(project => {
-          this.loadProjects();
+          // this.loadProjects();
           this.router.navigate(['project', project.id], {
             relativeTo: this.route,
           });
@@ -92,7 +95,7 @@ export class OverviewPageComponent implements OnInit {
       take(1),
       switchMap(full => this.projectsService.apiProjectsPost({ body: { ...full, name } }))
     ).subscribe(() => {
-      this.loadProjects();
+      // this.loadProjects();
       this.router.navigate(['project', project.id], {
         relativeTo: this.route,
         queryParams: { refresh: Date.now() },
@@ -116,7 +119,7 @@ export class OverviewPageComponent implements OnInit {
         if (!confirmed) return;
 
         this.projectsService.apiProjectsIdDelete({ id: project.id }).subscribe(() => {
-          this.loadProjects();
+          // this.loadProjects();
           const remaining = this._projects$.value;
           if (remaining.length > 0) {
             this.router.navigate(['project', remaining[0].id], {

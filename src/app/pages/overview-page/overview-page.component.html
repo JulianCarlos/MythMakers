@@ -14,7 +14,6 @@
     <div
       cdkDropList
       [cdkDropListData]="(projects$ | async) ?? []"
-      (cdkDropListDropped)="drop($event)"
       class="project-overview-list-container"
     >
       @for (project of (projects$ | async) ?? []; track project.id) {
