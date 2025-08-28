@@ -11,14 +11,25 @@ export const LoadAllProjectsSuccessful = createAction(
   props<{ projects: ProjectDto[] }>()
 );
 
-/* Create Or Update */
-export const CreateOrUpdateProject = createAction(
-  '[Projects] Create Or Update Projects',
+/* Create */
+export const CreateProject = createAction(
+  '[Projects] Create Projects',
   props<{ project: ProjectDto }>()
 );
 
-export const CreateOrUpdateProjectSuccessful = createAction(
-  '[Projects] Create Or Update Projects Successful',
+export const CreateProjectSuccessful = createAction(
+  '[Projects] Create Projects Successful',
+  props<{ project: ProjectDto }>()
+);
+
+/* Update */
+export const UpdateProject = createAction(
+  '[Projects] Update Projects',
+  props<{ project: ProjectDto }>()
+);
+
+export const UpdateProjectSuccessful = createAction(
+  '[Projects] Update Projects Successful',
   props<{ project: ProjectDto }>()
 );
 

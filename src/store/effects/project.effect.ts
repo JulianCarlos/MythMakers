@@ -24,12 +24,25 @@ export class ProjectEffects {
   );
 
   // Create/Update
-  readonly createOrUpdateProject$ = createEffect(() =>
+  readonly createProject$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromActions.CreateOrUpdateProject),
+      ofType(fromActions.CreateProject),
       concatMap(({ project }) =>
         this.projectService.apiProjectsPost({ body: project }).pipe(
-          map(saved => fromActions.CreateOrUpdateProjectSuccessful({ project: saved })),
+          map(saved => fromActions.CreateProjectSuccessful({ project: saved })),
+          catchError(() => EMPTY)
+        )
+      )
+    )
+  );
+
+  // Update
+  readonly updateProject$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromActions.UpdateProject),
+      concatMap(({ project }) =>
+        this.projectService.apiProjectsPut({ body: project }).pipe(
+          map(saved => fromActions.UpdateProjectSuccessful({ project: saved })),
           catchError(() => EMPTY)
         )
       )

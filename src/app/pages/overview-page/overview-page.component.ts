@@ -3,22 +3,24 @@ import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  Input,
   OnInit,
   inject,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, ParamMap, Router, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs';
-import { first, take } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, switchMap, take } from 'rxjs/operators';
 import { ProjectDto } from '../../api/models/project-dto';
 import { ProjectOverviewListItemComponent } from '../../components/project-overview-list-item/project-overview-list-item.component';
 import { ModalService } from '../../core/modal/modal.service';
 
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
-
+import { Actions, ofType } from '@ngrx/effects';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-overview-page',
   standalone: true,
@@ -40,27 +42,30 @@ export class OverviewPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private modal = inject(ModalService);
   private store = inject(Store);
+  private actions$ = inject(Actions)
 
-  projects$ = this.store.select(fromSelectors.getProjectsStateProjects);
-
-  private selectedProject: ProjectDto | null = null;
+  projects$: Observable<ProjectDto[]> = this.store.select(fromSelectors.getProjectsStateProjects);
+  private projects: ProjectDto[] = [];
 
   ngOnInit() {
     this.store.dispatch(fromActions.LoadAllProjects());
 
-    this.store.select(fromSelectors.getProjectsStateProjects).subscribe(projects => {
-      if (projects.length > 0 && projects.find(p => p.id === this.selectedProject?.id) == null) {
-        this.selectedProject = projects[0];
+    this.projects$.pipe().subscribe(projects => {
+      this.projects = projects ?? [];
+    });
 
-        this.router.navigate(['project', projects[0].id], {
-          relativeTo: this.route,
-          queryParams: { refresh: Date.now() },
-          queryParamsHandling: 'merge',
-        });
-      }
-      else {
-        this.selectedProject = null;
-      }
+    this.actions$.pipe(
+      ofType(fromActions.CreateProjectSuccessful),
+    ).subscribe(({ project }) => {
+      this.router.navigate(['project', project.id], { relativeTo: this.route });
+    });
+
+    this.actions$.pipe(
+      ofType(fromActions.DeleteProjectByIdSuccess)
+    ).subscribe(({ projectId }) => {
+      const currentId = Number(this.route.snapshot.firstChild?.paramMap.get('projectId'));
+      if (projectId !== currentId) return;
+      this.router.navigate(['project', this.projects[0]?.id ?? 0], { relativeTo: this.route });
     });
   }
 
@@ -77,7 +82,7 @@ export class OverviewPageComponent implements OnInit {
 
         const newProject: ProjectDto = { id: 0, name };
 
-        this.store.dispatch(fromActions.CreateOrUpdateProject({ project: newProject }));
+        this.store.dispatch(fromActions.CreateProject({ project: newProject }));
       });
   }
 
@@ -94,7 +99,7 @@ export class OverviewPageComponent implements OnInit {
 
       const newProject: ProjectDto = { ...project, name };
 
-      this.store.dispatch(fromActions.CreateOrUpdateProject({ project: newProject }));
+      this.store.dispatch(fromActions.UpdateProject({ project: newProject }));
     });
   } 
 
@@ -119,8 +124,6 @@ export class OverviewPageComponent implements OnInit {
 
   onProjectSelected(project: ProjectDto) {
     this.router.navigate(['project', project.id], { relativeTo: this.route });
-
-    this.selectedProject = project;
   }
 
   drop(event: CdkDragDrop<ProjectDto[]>) {

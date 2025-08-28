@@ -14,7 +14,7 @@
 
       <app-worlds-view
         [project]="project"
-        [searchInput]="searchInput"
+        [searchInput]="searchQuery"
         (removeWorldId)="removeWorld(project, $event)"
         (openWorld)="openWorld($event)"
         (addWorldName)="addWorld(project, $event)"
@@ -23,7 +23,7 @@
 
       <app-countries-view
         [project]="project"
-        [searchInput]="searchInput"
+        [searchInput]="searchQuery"
         (removeCountryId)="removeCountry(project, $event)"
         (openCountry)="openCountry($event)"
         (addCountryName)="addCountry(project, $event)"
@@ -32,7 +32,7 @@
 
       <app-cities-view
         [project]="project"
-        [searchInput]="searchInput"
+        [searchInput]="searchQuery"
         (removeCityId)="removeCity(project, $event)"
         (openCity)="openCity($event)"
         (addCityName)="addCity(project, $event)"
@@ -41,7 +41,7 @@
 
       <app-characters-view
         [project]="project"
-        [searchInput]="searchInput"
+        [searchInput]="searchQuery"
         (removeCharacterId)="removeCharacter(project, $event)"
         (openCharacter)="openCharacter($event)"
         (addCharacterName)="addCharacter(project, $event)"

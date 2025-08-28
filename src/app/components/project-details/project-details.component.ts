@@ -1,10 +1,10 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { combineLatest, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay, startWith, takeUntil } from 'rxjs/operators';
 import { ProjectDto } from '../../api/models/project-dto';
 import { CharactersViewComponent } from '../characters-view/characters-view.component';
 import { CitiesViewComponent } from '../cities-view/cities-view.component';
@@ -33,56 +33,39 @@ type EntityKey = 'worlds' | 'countries' | 'cities' | 'characters';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectDetailsComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
-  private readonly destroy$ = new Subject<void>();
 
-  protected form: FormGroup = this.fb.group({});
+  @Input({ required: true }) projectId!: string;
 
-  protected searchInput = '';
+  protected form: FormGroup = this.fb.group({ siteSearch: [''] });
+  protected searchQuery = '';
 
-  private projects$ = this.store.select(fromSelectors.getProjectsStateProjects);
+  private readonly projects$ = this.store.select(fromSelectors.getProjectsStateProjects);
 
-  private projectId$ = this.route.paramMap.pipe(
-    map((paramMap: ParamMap) => {
-      const id = Number(paramMap.get('projectId'));
-      return id;
-    }),
-    filter((id: number) => {
-      return !Number.isNaN(id);
-    }),
-    distinctUntilChanged((a: number, b: number) => {
-      return a === b;
-    })
+  readonly projectId$ = this.router.events.pipe(
+    filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+    startWith(null),
+    map(() => this.getRouteParam(['projectId', 'id'])),
+    map(v => (v == null ? NaN : Number(v))),
+    filter(Number.isInteger),
+    distinctUntilChanged(),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  project$ = combineLatest([this.projectId$, this.projects$]).pipe(
-    map(([id, projects]: [number, ProjectDto[]]) => {
-      if (!Array.isArray(projects)) {
-        return null;
-      }
-      const found = projects.find((p: ProjectDto) => {
-        return p.id === id;
-      });
-      return found ?? null;
-    }),
-    filter((p: ProjectDto | null): p is ProjectDto => {
-      return p !== null;
-    }),
+  readonly project$ = combineLatest([this.projectId$, this.projects$]).pipe(
+    map(([id, projects]) => (Array.isArray(projects) ? projects.find(p => p.id === id) ?? null : null)),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
   ngOnInit(): void {
-    this.form = this.fb.group({ siteSearch: [''] });
-
     this.form.get('siteSearch')!
       .valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: unknown) => {
-        this.searchInput = (value ?? '').toString();
-      });
+      .subscribe(v => { this.searchQuery = (v ?? '').toString(); });
   }
 
   ngOnDestroy(): void {
@@ -90,78 +73,80 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private add(project: ProjectDto, key: EntityKey, name: string): void {
-    const trimmed = name ? name.trim() : '';
-    if (!trimmed) {
-      return;
-    }
-
-    const arr = Array.isArray(project[key]) ? (project[key] as any[]) : [];
-    const newEntity = { id: 0, name: trimmed };
-
-    const updated: ProjectDto = {
-      ...project,
-      [key]: [...arr, newEntity],
-    };
-
-    this.store.dispatch(fromActions.CreateOrUpdateProject({ project: updated }));
+  addCharacter(project: ProjectDto, name: string): void {
+    this.add(project, 'characters', name);
   }
 
-  private remove(project: ProjectDto, key: EntityKey, id: number): void {
+  addCity(project: ProjectDto, name: string): void {
+    this.add(project, 'cities', name);
+  }
+
+  addCountry(project: ProjectDto, name: string): void {
+    this.add(project, 'countries', name);
+  }
+
+  addWorld(project: ProjectDto, name: string): void {
+    this.add(project, 'worlds', name);
+  }
+
+  openCharacter(characterId: number): void {
+    this.open('character', characterId);
+  }
+
+  openCity(cityId: number): void {
+    this.open('city', cityId);
+  }
+
+  openCountry(countryId: number): void {
+    this.open('country', countryId);
+  }
+
+  openWorld(worldId: number): void {
+    this.open('world', worldId);
+  }
+
+  removeCharacter(project: ProjectDto, characterId: number): void {
+    this.remove(project, 'characters', characterId);
+  }
+
+  removeCity(project: ProjectDto, cityId: number): void {
+    this.remove(project, 'cities', cityId);
+  }
+
+  removeCountry(project: ProjectDto, countryId: number): void {
+    this.remove(project, 'countries', countryId);
+  }
+
+  removeWorld(project: ProjectDto, worldId: number): void {
+    this.remove(project, 'worlds', worldId);
+  }
+
+  private add(project: ProjectDto, key: EntityKey, name: string): void {
+    const n = (name ?? '').trim();
+    if (!n) return;
     const arr = Array.isArray(project[key]) ? (project[key] as any[]) : [];
-
-    const updated: ProjectDto = {
-      ...project,
-      [key]: arr.filter((e: any) => {
-        return e?.id !== id;
-      }),
-    };
-
-    this.store.dispatch(fromActions.CreateOrUpdateProject({ project: updated }));
+    const updated: ProjectDto = { ...project, [key]: [...arr, { id: 0, name: n }] };
+    this.store.dispatch(fromActions.UpdateProject({ project: updated }));
   }
 
   private open(path: 'world' | 'country' | 'city' | 'character', id: number): void {
     this.router.navigate([path, id], { relativeTo: this.route });
   }
 
-  addWorld(project: ProjectDto, name: string): void {
-    this.add(project, 'worlds', name);
-  }
-  removeWorld(project: ProjectDto, worldId: number): void {
-    this.remove(project, 'worlds', worldId);
-  }
-
-  addCountry(project: ProjectDto, name: string): void {
-    this.add(project, 'countries', name);
-  }
-  removeCountry(project: ProjectDto, countryId: number): void {
-    this.remove(project, 'countries', countryId);
+  private remove(project: ProjectDto, key: EntityKey, id: number): void {
+    const arr = Array.isArray(project[key]) ? (project[key] as any[]) : [];
+    const updated: ProjectDto = { ...project, [key]: arr.filter((e: any) => e?.id !== id) };
+    this.store.dispatch(fromActions.UpdateProject({ project: updated }));
   }
 
-  addCity(project: ProjectDto, name: string): void {
-    this.add(project, 'cities', name);
-  }
-  removeCity(project: ProjectDto, cityId: number): void {
-    this.remove(project, 'cities', cityId);
-  }
-
-  addCharacter(project: ProjectDto, name: string): void {
-    this.add(project, 'characters', name);
-  }
-  removeCharacter(project: ProjectDto, characterId: number): void {
-    this.remove(project, 'characters', characterId);
-  }
-
-  openWorld(worldId: number): void {
-    this.open('world', worldId);
-  }
-  openCountry(countryId: number): void {
-    this.open('country', countryId);
-  }
-  openCity(cityId: number): void {
-    this.open('city', cityId);
-  }
-  openCharacter(characterId: number): void {
-    this.open('character', characterId);
+  private getRouteParam(names: string[]): string | null {
+    const maps = this.route.pathFromRoot.map(r => r.snapshot.paramMap);
+    for (let i = maps.length - 1; i >= 0; i--) {
+      for (const n of names) {
+        const v = maps[i].get(n);
+        if (v !== null) return v;
+      }
+    }
+    return null;
   }
 }

@@ -19,6 +19,8 @@ import { apiProjectsIdGet } from '../fn/projects/api-projects-id-get';
 import { ApiProjectsIdGet$Params } from '../fn/projects/api-projects-id-get';
 import { apiProjectsPost } from '../fn/projects/api-projects-post';
 import { ApiProjectsPost$Params } from '../fn/projects/api-projects-post';
+import { apiProjectsPut } from '../fn/projects/api-projects-put';
+import { ApiProjectsPut$Params } from '../fn/projects/api-projects-put';
 import { ProjectDto } from '../models/project-dto';
 
 @Injectable({ providedIn: 'root' })
@@ -49,6 +51,31 @@ export class ProjectsService extends BaseService {
   apiProjectsGet(params?: ApiProjectsGet$Params, context?: HttpContext): Observable<Array<ProjectDto>> {
     return this.apiProjectsGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<Array<ProjectDto>>): Array<ProjectDto> => r.body)
+    );
+  }
+
+  /** Path part for operation `apiProjectsPut()` */
+  static readonly ApiProjectsPutPath = '/api/Projects';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiProjectsPut()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiProjectsPut$Response(params?: ApiProjectsPut$Params, context?: HttpContext): Observable<StrictHttpResponse<ProjectDto>> {
+    return apiProjectsPut(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiProjectsPut$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiProjectsPut(params?: ApiProjectsPut$Params, context?: HttpContext): Observable<ProjectDto> {
+    return this.apiProjectsPut$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ProjectDto>): ProjectDto => r.body)
     );
   }
 
