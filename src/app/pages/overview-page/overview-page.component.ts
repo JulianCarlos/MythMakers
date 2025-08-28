@@ -9,14 +9,13 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject } from 'rxjs';
-import { first, switchMap, take } from 'rxjs/operators';
+import { first, take } from 'rxjs/operators';
 import { ProjectDto } from '../../api/models/project-dto';
-import { ProjectsService } from '../../api/services/projects.service';
 import { ProjectOverviewListItemComponent } from '../../components/project-overview-list-item/project-overview-list-item.component';
 import { ModalService } from '../../core/modal/modal.service';
 
-import { Store } from '@ngrx/store';
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
 
@@ -40,21 +39,27 @@ export class OverviewPageComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private modal = inject(ModalService);
-  private projectsService = inject(ProjectsService);
   private store = inject(Store);
 
-  private _projects$ = new BehaviorSubject<ProjectDto[]>([]);
-  projects$ = this._projects$.asObservable();
+  projects$ = this.store.select(fromSelectors.getProjectsStateProjects);
+
+  private selectedProject: ProjectDto | null = null;
 
   ngOnInit() {
     this.store.dispatch(fromActions.LoadAllProjects());
 
     this.store.select(fromSelectors.getProjectsStateProjects).subscribe(projects => {
-      this._projects$.next(projects);
-      if (!this.route.firstChild && projects.length > 0) {
+      if (projects.length > 0 && projects.find(p => p.id === this.selectedProject?.id) == null) {
+        this.selectedProject = projects[0];
+
         this.router.navigate(['project', projects[0].id], {
           relativeTo: this.route,
+          queryParams: { refresh: Date.now() },
+          queryParamsHandling: 'merge',
         });
+      }
+      else {
+        this.selectedProject = null;
       }
     });
   }
@@ -71,39 +76,27 @@ export class OverviewPageComponent implements OnInit {
         if (!name) return;
 
         const newProject: ProjectDto = { id: 0, name };
-        this.projectsService.apiProjectsPost({ body: newProject }).subscribe(project => {
-          // this.loadProjects();
-          this.router.navigate(['project', project.id], {
-            relativeTo: this.route,
-          });
-        });
+
+        this.store.dispatch(fromActions.CreateOrUpdateProject({ project: newProject }));
       });
   }
 
   onEditProject(project: ProjectDto) {
-  this.modal.openTextPrompt({
-    title: `Rename "${project.name}"`,
-    placeholder: 'Enter new name',
-    initialValue: project.name,
-  })
-  .pipe(take(1))
-  .subscribe(nameRaw => {
-    const name = nameRaw?.trim();
-    if (!name) return;
+    this.modal.openTextPrompt({
+      title: `Rename "${project.name}"`,
+      placeholder: 'Enter new name',
+      initialValue: project.name,
+    })
+    .pipe(take(1))
+    .subscribe(nameRaw => {
+      const name = nameRaw?.trim();
+      if (!name) return;
 
-    this.projectsService.apiProjectsIdGet({ id: project.id }).pipe(
-      take(1),
-      switchMap(full => this.projectsService.apiProjectsPost({ body: { ...full, name } }))
-    ).subscribe(() => {
-      // this.loadProjects();
-      this.router.navigate(['project', project.id], {
-        relativeTo: this.route,
-        queryParams: { refresh: Date.now() },
-        queryParamsHandling: 'merge',
-      });
+      const newProject: ProjectDto = { ...project, name };
+
+      this.store.dispatch(fromActions.CreateOrUpdateProject({ project: newProject }));
     });
-  });
-} 
+  } 
 
   onDeleteProject(project: ProjectDto) {
     this.modal
@@ -116,30 +109,23 @@ export class OverviewPageComponent implements OnInit {
       })
       .pipe(first())
       .subscribe((confirmed) => {
-        if (!confirmed) return;
+        if (!confirmed) {
+          return;
+        }
 
-        this.projectsService.apiProjectsIdDelete({ id: project.id }).subscribe(() => {
-          // this.loadProjects();
-          const remaining = this._projects$.value;
-          if (remaining.length > 0) {
-            this.router.navigate(['project', remaining[0].id], {
-              relativeTo: this.route,
-            });
-          } else {
-            this.router.navigate(['./'], { relativeTo: this.route });
-          }
-        });
+        this.store.dispatch(fromActions.DeleteProjectById({ projectId: project.id }));
       });
   }
 
   onProjectSelected(project: ProjectDto) {
     this.router.navigate(['project', project.id], { relativeTo: this.route });
+
+    this.selectedProject = project;
   }
 
   drop(event: CdkDragDrop<ProjectDto[]>) {
-    const copy = [...this._projects$.value];
-    const [moved] = copy.splice(event.previousIndex, 1);
-    copy.splice(event.currentIndex, 0, moved);
-    this._projects$.next(copy);
+    const ids = (event.container.data ?? []).map(p => p.id);
+    const [moved] = ids.splice(event.previousIndex, 1);
+    ids.splice(event.currentIndex, 0, moved);
   }
 }

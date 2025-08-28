@@ -30,7 +30,10 @@ export const routes: Routes = [
     component: OverviewPageComponent,
     canMatch: [authMatch],
     children: [
-      { path: 'project/:projectId', component: ProjectDetailsComponent },
+      { 
+        path: 'project/:projectId', 
+        component: ProjectDetailsComponent 
+      },
       {
         path: 'project/:projectId/world/:worldId',
         component: WorldDetailsComponent,

@@ -1,24 +1,51 @@
 import { Injectable, inject } from '@angular/core';
-import { ProjectsService } from '@api/services';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { ProjectsService } from '@api/services';
 import { EMPTY } from 'rxjs';
-import { map, exhaustMap, catchError, switchMap } from 'rxjs/operators';
-
+import { map, catchError, exhaustMap, concatMap } from 'rxjs/operators';
 import * as fromActions from 'store/actions/project.action';
 
 @Injectable()
 export class ProjectEffects {
-  private actions$ = inject(Actions);
-  private projectService = inject(ProjectsService);
+  private readonly actions$ = inject(Actions);
+  private readonly projectService = inject(ProjectsService);
 
-  loadProjects$ = createEffect(() => {
-    return this.actions$.pipe(
-        ofType(fromActions.LoadAllProjects),
-        switchMap(() => this.projectService.apiProjectsGet()
-          .pipe(
-            map(projects => fromActions.LoadAllProjectsSuccessful({ projects })),
-            catchError(() => EMPTY)
-          ))
-    );
-  });
+  // Load
+  readonly loadProjects$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromActions.LoadAllProjects),
+      exhaustMap(() =>
+        this.projectService.apiProjectsGet().pipe(
+          map(projects => fromActions.LoadAllProjectsSuccessful({ projects })),
+          catchError(() => EMPTY)
+        )
+      )
+    )
+  );
+
+  // Create/Update
+  readonly createOrUpdateProject$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromActions.CreateOrUpdateProject),
+      concatMap(({ project }) =>
+        this.projectService.apiProjectsPost({ body: project }).pipe(
+          map(saved => fromActions.CreateOrUpdateProjectSuccessful({ project: saved })),
+          catchError(() => EMPTY)
+        )
+      )
+    )
+  );
+
+  // Delete
+  readonly deleteProjectById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromActions.DeleteProjectById),
+      concatMap(({ projectId }) =>
+        this.projectService.apiProjectsIdDelete({ id: projectId }).pipe(
+          map(() => fromActions.DeleteProjectByIdSuccess({ projectId })),
+          catchError(() => EMPTY)
+        )
+      )
+    )
+  );
 }
