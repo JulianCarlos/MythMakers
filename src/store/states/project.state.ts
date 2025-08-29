@@ -12,4 +12,5 @@ export const initialState: ProjectsState = {
 };
 
 export const getProjectDataState = createFeatureSelector<ProjectsState>('projects');
+
 export const getSectionQueryResultEntities = (state: ProjectsState) => state.projects;

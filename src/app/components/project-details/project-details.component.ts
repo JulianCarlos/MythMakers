@@ -1,18 +1,19 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { combineLatest, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { ProjectDto } from '../../api/models/project-dto';
 import { CharactersViewComponent } from '../characters-view/characters-view.component';
 import { CitiesViewComponent } from '../cities-view/cities-view.component';
 import { CountriesViewComponent } from '../countries-view/countries-view.component';
 import { WorldsViewComponent } from '../worlds-view/worlds-view.component';
+
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 type EntityKey = 'worlds' | 'countries' | 'cities' | 'characters';
 
@@ -70,6 +71,10 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  protected open(path: 'world' | 'country' | 'city' | 'character', id: number): void {
+    this.router.navigate([path, id], { relativeTo: this.route });
+  }
+
   protected add(project: ProjectDto, key: EntityKey, name: string): void {
     const newName = (name ?? '').trim();
 
@@ -83,10 +88,6 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
     };
 
     this.store.dispatch(fromActions.UpdateProject({ project: updated }));
-  }
-
-  protected open(path: 'world' | 'country' | 'city' | 'character', id: number): void {
-    this.router.navigate([path, id], { relativeTo: this.route });
   }
 
   protected remove(project: ProjectDto, key: EntityKey, id: number): void {

@@ -1,1 +1,18 @@
-<p>world-details works!</p>
+<form [formGroup]="form">
+    <div class="project-details-overview-container">
+        <div class="project-details-header">
+            <h1>{{ selectedWorld?.name }} (World)</h1>
+        </div>
+
+        <div class="input-container">
+            <label for="shortDescription">Short Description</label>
+            <input formControlName="shortDescription" type="text" name="shortDescription" id="shortDescription"/>
+        </div>
+
+        <div class="input-container">
+            <label for="longDescription">Long Description</label>
+            <textarea formControlName="longDescription" name="longDescription" id="longDescription"></textarea>
+        </div>
+    </div>
+</form>
+
