@@ -1,5 +1,6 @@
 import { ProjectDto } from "@api/models";
 import { createAction, props } from "@ngrx/store";
+import { ProjectAttributeType } from "app/enums/project-attribute-type";
 
 /* Get */
 export const LoadAllProjects = createAction(
@@ -43,3 +44,14 @@ export const DeleteProjectByIdSuccess = createAction(
   '[Projects] Delete Project By Id Successful',
   props<{ projectId: number }>()
 );
+
+export const UpdateProjectPropertyById = createAction(
+  '[Projects] Update Project Property By Id',
+  props<{
+    projectId: number;
+    propertyId: number;
+    property: ProjectAttributeType;
+    value: any;
+  }>()
+);
+

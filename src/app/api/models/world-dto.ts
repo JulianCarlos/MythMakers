@@ -6,5 +6,6 @@ export interface WorldDto {
   id: number;
   longDescription?: string | null;
   name?: string | null;
+  projectId?: number;
   shortDescription?: string | null;
 }

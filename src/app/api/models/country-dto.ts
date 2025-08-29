@@ -6,4 +6,5 @@ export interface CountryDto {
   description?: string | null;
   id: number;
   name?: string | null;
+  projectId?: number;
 }

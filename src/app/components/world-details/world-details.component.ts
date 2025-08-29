@@ -3,6 +3,7 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { WorldDto } from '@api/models';
 import { Store } from '@ngrx/store';
+import { filter } from 'rxjs';
 
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
@@ -32,17 +33,32 @@ export class WorldDetailsComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.store.select(fromSelectors.getSelectedWorld(this.worldId)).subscribe(world => {
-      this.selectedWorld = world;
-    });
+    this.store.select(fromSelectors.getSelectedProjectProperty('worlds', this.worldId))
+      .pipe(filter(world => world != null))
+      .subscribe(world => {
+        this.selectedWorld = world;
 
-    this.form.patchValue({
-      shortDescription: this.selectedWorld?.shortDescription ?? '',
-      longDescription: this.selectedWorld?.longDescription ?? ''
-    });
+        this.form.patchValue({
+          shortDescription: this.selectedWorld?.shortDescription ?? '',
+          longDescription: this.selectedWorld?.longDescription ?? ''
+        });
+      }
+    );
 
     this.form.valueChanges.subscribe(value => {
-      console.log(value);
+      const updatedWorld: WorldDto = {
+        ...this.selectedWorld,
+        id: this.selectedWorld?.id ?? this.worldId,
+        shortDescription: value.shortDescription,
+        longDescription: value.longDescription
+      }
+
+      this.store.dispatch(fromActions.UpdateProjectPropertyById({
+        projectId: this.projectId,
+        propertyId: this.worldId,
+        property: 'worlds',
+        value: updatedWorld
+      }))
     });
   }
 }

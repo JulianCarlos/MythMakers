@@ -41,7 +41,41 @@ const projectsReducerImpl = createReducer(
     ...state,
     loading: false,
     projects: state.projects.filter(p => p.id !== projectId),
-  }))
+  })),
+
+  on(
+    fromActions.UpdateProjectPropertyById,
+    (state, { projectId, property, propertyId, value }) => {
+      let changed = false;
+
+      const projects = state.projects.map(project => {
+        if (+project.id !== +projectId) {
+          return project;
+        }
+
+        const list: any[] = (project as any)[property];
+        const idx = list.findIndex(e => +e.id === +propertyId);
+        const curr = list[idx];
+
+        const patch = value ?? {};
+        const willChange = Object.keys(patch).some(k => curr[k] !== (patch as any)[k]);
+
+        if (!willChange) {
+          return project;
+        }
+
+        const updatedItem = { ...curr, ...patch };
+        const updatedList = [...list];
+        updatedList[idx] = updatedItem;
+
+        changed = true;
+        
+        return { ...project, [property]: updatedList };
+      });
+
+      return changed ? { ...state, projects } : state;
+    }
+  ),
 );
 
 export function reducer(state: ProjectsState | undefined, action: Action): ProjectsState {

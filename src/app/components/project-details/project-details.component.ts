@@ -14,8 +14,7 @@ import { WorldsViewComponent } from '../worlds-view/worlds-view.component';
 
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
-
-type EntityKey = 'worlds' | 'countries' | 'cities' | 'characters';
+import { ProjectAttributeType } from 'app/enums/project-attribute-type';
 
 @Component({
   selector: 'app-project-details',
@@ -75,7 +74,7 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate([path, id], { relativeTo: this.route });
   }
 
-  protected add(project: ProjectDto, key: EntityKey, name: string): void {
+  protected add(project: ProjectDto, key: ProjectAttributeType, name: string): void {
     const newName = (name ?? '').trim();
 
     if (!newName) {
@@ -84,13 +83,13 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
 
     const updated: ProjectDto = {
       ...project,
-      [key]: [...(project[key] ?? []), { id: 0, name: newName }],
+      [key]: [...(project[key] ?? []), { id: 0, name: newName, projectId: project.id }],
     };
 
     this.store.dispatch(fromActions.UpdateProject({ project: updated }));
   }
 
-  protected remove(project: ProjectDto, key: EntityKey, id: number): void {
+  protected remove(project: ProjectDto, key: ProjectAttributeType, id: number): void {
     const updated: ProjectDto = { 
       ...project, 
       [key]: (project[key] ?? []).filter((e: any) => e?.id !== id),

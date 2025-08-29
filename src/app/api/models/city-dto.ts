@@ -6,4 +6,5 @@ export interface CityDto {
   description?: string | null;
   id: number;
   name?: string | null;
+  projectId?: number;
 }

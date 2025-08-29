@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store";
-import e from "express";
+import { ProjectAttributeType } from "app/enums/project-attribute-type";
 
 import * as fromState from 'store/states/project.state';
 
@@ -13,11 +13,10 @@ export const getProjectsStateProjects = createSelector(
   fromState.getSectionQueryResultEntities
 );
 
-export const getSelectedWorld = (worldId: number) => createSelector(
-  getProjectsStateProjects,
-  (projects) => {
-    const target = Number(worldId);
-    const worlds = projects?.flatMap(p => p.worlds ?? []) ?? [];
-    return worlds.find(w => Number(w.id) === target) ?? null;
+export const getSelectedProjectProperty = (key: ProjectAttributeType, id: number | string) =>
+  createSelector(getProjectsStateProjects, (projects) => {
+    const list = (projects ?? []).flatMap((p: any) => p?.[key] ?? []);
+    const target = Number(id);
+    return list.find((item: any) => Number(item?.id) === target) ?? null;
   }
 );
