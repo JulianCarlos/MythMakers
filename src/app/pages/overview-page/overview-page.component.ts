@@ -3,24 +3,22 @@ import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnInit,
-  inject,
+  inject
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, NavigationEnd, ParamMap, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { distinctUntilChanged, filter, first, map, startWith, switchMap, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { first, take } from 'rxjs/operators';
 import { ProjectDto } from '../../api/models/project-dto';
 import { ProjectOverviewListItemComponent } from '../../components/project-overview-list-item/project-overview-list-item.component';
 import { ModalService } from '../../core/modal/modal.service';
 
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
-import { Actions, ofType } from '@ngrx/effects';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
 @Component({
   selector: 'app-overview-page',
   standalone: true,
@@ -64,26 +62,37 @@ export class OverviewPageComponent implements OnInit {
       ofType(fromActions.DeleteProjectByIdSuccess)
     ).subscribe(({ projectId }) => {
       const currentId = Number(this.route.snapshot.firstChild?.paramMap.get('projectId'));
-      if (projectId !== currentId) return;
-      this.router.navigate(['project', this.projects[0]?.id ?? 0], { relativeTo: this.route });
+
+      if (projectId !== currentId) {
+        return;
+      }
+
+      if (this.projects?.length > 0) {
+        this.router.navigate(['project', this.projects[0]?.id], { relativeTo: this.route });
+      }
+      else {
+        this.router.navigate(['project'], { relativeTo: this.route });
+      }
     });
   }
 
   onAddProject() {
-    this.modal
-      .openTextPrompt({
-        title: 'New project',
-        placeholder: 'Enter project name',
-      })
-      .pipe(take(1))
-      .subscribe((value) => {
-        const name = value?.trim();
-        if (!name) return;
+    this.modal.openTextPrompt({
+      title: 'New project',
+      placeholder: 'Enter project name',
+    })
+    .pipe(take(1))
+    .subscribe((value) => {
+      const name = value?.trim();
 
-        const newProject: ProjectDto = { id: 0, name };
+      if (!name) {
+        return;
+      }
 
-        this.store.dispatch(fromActions.CreateProject({ project: newProject }));
-      });
+      const newProject: ProjectDto = { id: 0, name };
+
+      this.store.dispatch(fromActions.CreateProject({ project: newProject }));
+    });
   }
 
   onEditProject(project: ProjectDto) {
@@ -95,7 +104,10 @@ export class OverviewPageComponent implements OnInit {
     .pipe(take(1))
     .subscribe(nameRaw => {
       const name = nameRaw?.trim();
-      if (!name) return;
+      
+      if (!name) {
+        return;
+      }
 
       const newProject: ProjectDto = { ...project, name };
 
@@ -104,22 +116,21 @@ export class OverviewPageComponent implements OnInit {
   } 
 
   onDeleteProject(project: ProjectDto) {
-    this.modal
-      .openConfirm({
+    this.modal.openConfirm({
         title: 'Delete project?',
         message: `This will permanently remove "${project.name}".`,
         confirmLabel: 'Delete',
         cancelLabel: 'Cancel',
         danger: true,
-      })
-      .pipe(first())
-      .subscribe((confirmed) => {
-        if (!confirmed) {
-          return;
-        }
+    })
+    .pipe(first())
+    .subscribe((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
 
-        this.store.dispatch(fromActions.DeleteProjectById({ projectId: project.id }));
-      });
+      this.store.dispatch(fromActions.DeleteProjectById({ projectId: project.id }));
+    });
   }
 
   onProjectSelected(project: ProjectDto) {

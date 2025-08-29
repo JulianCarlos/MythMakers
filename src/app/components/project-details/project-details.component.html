@@ -15,36 +15,36 @@
       <app-worlds-view
         [project]="project"
         [searchInput]="searchQuery"
-        (removeWorldId)="removeWorld(project, $event)"
-        (openWorld)="openWorld($event)"
-        (addWorldName)="addWorld(project, $event)"
+        (removeWorldId)="remove(project, 'worlds', $event)"
+        (openWorld)="open('world', $event)"
+        (addWorldName)="add(project, 'worlds', $event)"
       >
       </app-worlds-view>
 
       <app-countries-view
         [project]="project"
         [searchInput]="searchQuery"
-        (removeCountryId)="removeCountry(project, $event)"
-        (openCountry)="openCountry($event)"
-        (addCountryName)="addCountry(project, $event)"
+        (removeCountryId)="remove(project, 'countries', $event)"
+        (openCountry)="open('country', $event)"
+        (addCountryName)="add(project, 'countries', $event)"
       >
       </app-countries-view>
 
       <app-cities-view
         [project]="project"
         [searchInput]="searchQuery"
-        (removeCityId)="removeCity(project, $event)"
-        (openCity)="openCity($event)"
-        (addCityName)="addCity(project, $event)"
+        (removeCityId)="remove(project, 'cities', $event)"
+        (openCity)="open('city', $event)"
+        (addCityName)="add(project, 'cities', $event)"
       >
       </app-cities-view>
 
       <app-characters-view
         [project]="project"
         [searchInput]="searchQuery"
-        (removeCharacterId)="removeCharacter(project, $event)"
-        (openCharacter)="openCharacter($event)"
-        (addCharacterName)="addCharacter(project, $event)"
+        (removeCharacterId)="remove(project, 'characters', $event)"
+        (openCharacter)="open('character', $event)"
+        (addCharacterName)="add(project, 'characters', $event)"
       >
       </app-characters-view>
     }

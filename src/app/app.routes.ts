@@ -30,27 +30,16 @@ export const routes: Routes = [
     component: OverviewPageComponent,
     canMatch: [authMatch],
     children: [
-      { 
-        path: 'project/:projectId', 
-        component: ProjectDetailsComponent 
-      },
       {
-        path: 'project/:projectId/world/:worldId',
-        component: WorldDetailsComponent,
+        path: 'project/:projectId',
+        children: [
+          { path: '', component: ProjectDetailsComponent },
+          { path: 'world/:worldId', component: WorldDetailsComponent },
+          { path: 'country/:countryId', component: CountryDetailsComponent },
+          { path: 'city/:cityId', component: CityDetailsComponent },
+          { path: 'character/:characterId', component: CharacterDetailsComponent },
+        ],
       },
-      {
-        path: 'project/:projectId/country/:countryId',
-        component: CountryDetailsComponent,
-      },
-      {
-        path: 'project/:projectId/city/:cityId',
-        component: CityDetailsComponent,
-      },
-      {
-        path: 'project/:projectId/character/:characterId',
-        component: CharacterDetailsComponent,
-      },
-      { path: '', pathMatch: 'full', redirectTo: 'project/0' },
     ],
   },
   { path: '', pathMatch: 'full', redirectTo: 'overview' },
