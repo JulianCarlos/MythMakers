@@ -1,1 +1,39 @@
-<p>city-details works!</p>
+<form [formGroup]="form">
+    <div class="project-details-overview-container">
+        <div class="project-details-header" style="display: flex; flex-direction: row;">
+            <button
+            class="btn btn--icon btn--ghost"
+            (click)="backToProject()"
+            aria-label="Add project"
+            >
+                <mat-icon fontIcon="arrow_back"></mat-icon>
+            </button>
+            <h1>{{ selectedCity?.name }} (Country)</h1>
+        </div>
+
+        <div class="input-container">
+            <label for="shortDescription">Short Description</label>
+            <input formControlName="shortDescription" type="text" name="shortDescription" id="shortDescription"/>
+        </div>
+
+        <div class="input-container">
+            <label for="longDescription">Long Description</label>
+            <textarea formControlName="longDescription" name="longDescription" id="longDescription"></textarea>
+        </div>
+
+        <div class="input-container">
+            <label for="longDescription">History</label>
+            <textarea formControlName="history" name="history" id="history"></textarea>
+        </div>
+
+        <button
+        class="btn btn--primary btn--sm"
+        type="submit"
+        [disabled]="form.invalid || !form.dirty"
+        (click)="applyChanges()"
+        >
+        Apply Changes
+        </button>
+    </div>
+</form>
+

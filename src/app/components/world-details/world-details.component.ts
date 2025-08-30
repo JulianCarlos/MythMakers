@@ -3,11 +3,11 @@ import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ProjectDto, WorldDto } from '@api/models';
 import { Store } from '@ngrx/store';
 import { ModalService } from 'app/core/modal/modal.service';
-import { distinctUntilChanged, filter, first, take, withLatestFrom } from 'rxjs';
+import { distinctUntilChanged, filter, first, withLatestFrom } from 'rxjs';
 
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
@@ -38,7 +38,8 @@ export class WorldDetailsComponent implements OnInit {
 
   protected form: FormGroup = this.fb.group({ 
     shortDescription: [''],
-    longDescription: ['']  
+    longDescription: [''],
+    history: ['']
   });
 
   ngOnInit(): void {
@@ -54,7 +55,8 @@ export class WorldDetailsComponent implements OnInit {
           (a, b) =>
             a.id === b.id &&
             a.shortDescription === b.shortDescription &&
-            a.longDescription === b.longDescription
+            a.longDescription === b.longDescription &&
+            a.history === b.history
         )
       );
 
@@ -63,42 +65,16 @@ export class WorldDetailsComponent implements OnInit {
       .subscribe(([world, project]) => {
         this.selectedProject = project;
         this.selectedWorld = world;
-
+        
         this.form.reset(
           {
             shortDescription: world.shortDescription ?? '',
-            longDescription: world.longDescription ?? ''
+            longDescription: world.longDescription ?? '',
+            history: world.history ?? ''
           },
           { emitEvent: false }
         );
       });
-  }
-
-  applyChanges() {
-    if (!this.selectedProject || !this.selectedWorld) return;
-    if (this.form.invalid || this.form.pristine) return;
-
-    const { shortDescription, longDescription } = this.form.value;
-
-    const updatedWorld: WorldDto = {
-      ...this.selectedWorld,
-      shortDescription,
-      longDescription,
-    };
-
-    const updatedWorlds = (this.selectedProject.worlds ?? []).map(w =>
-      w.id === updatedWorld.id ? { ...w, ...updatedWorld } : w
-    );
-
-    this.store.dispatch(fromActions.UpdateProject({
-      project: {
-        ...this.selectedProject,
-        worlds: updatedWorlds
-      }
-    }));
-
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
   }
 
   backToProject() {
@@ -122,5 +98,33 @@ export class WorldDetailsComponent implements OnInit {
     else {
       this.router.navigate(['/overview/project', this.projectId]);
     }
+  }
+
+  applyChanges() {
+    if (!this.selectedProject || !this.selectedWorld) return;
+    if (this.form.invalid || this.form.pristine) return;
+
+    const { shortDescription, longDescription, history } = this.form.value;
+
+    const updatedWorld: WorldDto = {
+      ...this.selectedWorld,
+      shortDescription,
+      longDescription,
+      history
+    };
+
+    const updatedWorlds = (this.selectedProject.worlds ?? []).map(w =>
+      w.id === updatedWorld.id ? { ...w, ...updatedWorld } : w
+    );
+
+    this.store.dispatch(fromActions.UpdateProject({
+      project: {
+        ...this.selectedProject,
+        worlds: updatedWorlds
+      }
+    }));
+
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
   }
 }
