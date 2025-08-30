@@ -1,5 +1,5 @@
+import { ProjectDto } from "@api/models";
 import { createSelector } from "@ngrx/store";
-import { ProjectAttributeType } from "app/enums/project-attribute-type";
 
 import * as fromState from 'store/states/project.state';
 
@@ -13,7 +13,14 @@ export const getProjectsStateProjects = createSelector(
   fromState.getSectionQueryResultEntities
 );
 
-export const getSelectedProjectProperty = (key: ProjectAttributeType, id: number | string) =>
+export const getProjectsStateProjectById = (id: number | string) =>
+  createSelector(getProjectsStateProjects, (projects) => {
+    const target = Number(id);
+    return (projects ?? []).find((p: ProjectDto) => Number(p.id) === target) ?? null;
+  }
+);
+
+export const getSelectedProjectProperty = (key: keyof ProjectDto, id: number | string) =>
   createSelector(getProjectsStateProjects, (projects) => {
     const list = (projects ?? []).flatMap((p: any) => p?.[key] ?? []);
     const target = Number(id);

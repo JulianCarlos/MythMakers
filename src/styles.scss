@@ -305,11 +305,12 @@ mat-icon {
 
 .project-details-header {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
   padding: 15px 0px;
   gap: 15px;
+  border-bottom: 2px solid gray;
 
   h1 {
     margin: 0;
@@ -329,4 +330,10 @@ mat-icon {
 }
 .textarea--auto { 
   height: auto !important; 
+}
+
+.vertical-flex {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
 }

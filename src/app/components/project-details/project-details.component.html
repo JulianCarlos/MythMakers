@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <div class="project-details-overview-container">
     @if (project$ | async; as project) {
-      <div class="project-details-header">
+      <div class="project-details-header vertical-flex">
         <h1>{{ project.name }}</h1>
         <input
           type="search"

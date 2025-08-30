@@ -4,6 +4,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { ProjectAttributeType } from 'app/enums/project-attribute-type';
 import { combineLatest, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { ProjectDto } from '../../api/models/project-dto';
@@ -14,7 +15,6 @@ import { WorldsViewComponent } from '../worlds-view/worlds-view.component';
 
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
-import { ProjectAttributeType } from 'app/enums/project-attribute-type';
 
 @Component({
   selector: 'app-project-details',
@@ -39,12 +39,11 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly store = inject(Store);
 
+  protected projectId = input.required<number>();
   protected form: FormGroup = this.fb.group({ siteSearch: [''] });
   protected searchQuery = '';
 
-  projectId = input.required<number>();
-
-  readonly project$ = combineLatest([
+  protected readonly project$ = combineLatest([
     toObservable(this.projectId).pipe(
       map(value => Number(value)),
       distinctUntilChanged()

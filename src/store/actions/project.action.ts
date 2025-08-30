@@ -45,13 +45,4 @@ export const DeleteProjectByIdSuccess = createAction(
   props<{ projectId: number }>()
 );
 
-export const UpdateProjectPropertyById = createAction(
-  '[Projects] Update Project Property By Id',
-  props<{
-    projectId: number;
-    propertyId: number;
-    property: ProjectAttributeType;
-    value: any;
-  }>()
-);
 

@@ -1,6 +1,13 @@
 <form [formGroup]="form">
     <div class="project-details-overview-container">
-        <div class="project-details-header">
+        <div class="project-details-header" style="display: flex; flex-direction: row;">
+            <button
+            class="btn btn--icon btn--ghost"
+            (click)="backToProject()"
+            aria-label="Add project"
+            >
+                <mat-icon fontIcon="arrow_back"></mat-icon>
+            </button>
             <h1>{{ selectedWorld?.name }} (World)</h1>
         </div>
 
@@ -13,6 +20,15 @@
             <label for="longDescription">Long Description</label>
             <textarea formControlName="longDescription" name="longDescription" id="longDescription"></textarea>
         </div>
+
+        <button
+        class="btn btn--primary btn--sm"
+        type="submit"
+        [disabled]="form.invalid || !form.dirty"
+        (click)="applyChanges()"
+        >
+        Apply Changes
+        </button>
     </div>
 </form>
 
