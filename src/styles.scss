@@ -347,6 +347,10 @@ mat-icon {
   display: flex;
   flex-direction: column;
   padding: 50px 0px;
+
+  h2 {
+    border-bottom: 2px dotted gray;
+  }
 }
 
 .grouped-flex-box-wrapper {
