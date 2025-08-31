@@ -3,6 +3,15 @@ import { createSelector } from "@ngrx/store";
 
 import * as fromState from 'store/states/project.state';
 
+const propertyArrays = {
+  worlds: (p: ProjectDto) => p.worlds ?? [],
+  cities: (p: ProjectDto) => p.cities ?? [],
+  countries: (p: ProjectDto) => p.countries ?? [],
+  characters: (p: ProjectDto) => p.characters ?? [],
+} as const;
+
+type PropertyArrays = keyof typeof propertyArrays;
+
 export const getProjectsState = createSelector(
     fromState.getProjectDataState,
     (state: fromState.ProjectsState) => state
@@ -13,25 +22,15 @@ export const getProjectsStateProjects = createSelector(
   fromState.getSectionQueryResultEntities
 );
 
-export const getProjectsStateWorlds = createSelector(
-  getProjectsState,
-  fromState.getSectionQueryAllWorlds
-);
-
-export const getProjectsStateCountries = createSelector(
-  getProjectsState,
-  fromState.getSectionQueryAllCountries
-);
-
-export const getProjectsStateCitites = createSelector(
-  getProjectsState,
-  fromState.getSectionQueryAllCitites
-);
-
-export const getProjectsStateCharacters = createSelector(
-  getProjectsState,
-  fromState.getSectionQueryAllCharacters
-);
+export const getProjectsStateProjectProperty = (
+  projectId: number | string,
+  property: PropertyArrays
+) =>
+  createSelector(getProjectsStateProjects, (projects) => {
+    const target = Number(projectId);
+    const proj = (projects ?? []).find(p => Number(p.id) === target);
+    return proj ? propertyArrays[property](proj) : [];
+  });
 
 export const getProjectsStateProjectById = (id: number | string) =>
   createSelector(getProjectsStateProjects, (projects) => {

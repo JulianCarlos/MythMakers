@@ -1,0 +1,15 @@
+<select
+  class="field-select"
+  [multiple]="multiple"
+  [disabled]="disabled"
+  [ngModel]="modelValue"
+  (ngModelChange)="update($event)"
+>
+  <option *ngIf="!multiple && allowEmpty" [ngValue]="null"></option>
+  <option *ngIf="!multiple && !allowEmpty && placeholder" [ngValue]="null" disabled [hidden]="modelValue != null">
+    {{ placeholder }}
+  </option>
+  <option *ngFor="let item of items; trackBy: trackByKey" [ngValue]="getKey(item)">
+    {{ getLabel(item) }}
+  </option>
+</select>
