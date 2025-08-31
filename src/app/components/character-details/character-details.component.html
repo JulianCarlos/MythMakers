@@ -1,1 +1,200 @@
-<p>character-details works!</p>
+<form [formGroup]="form">
+    <div class="project-details-overview-container">
+        <div class="project-details-header" style="display: flex; flex-direction: row;">
+            <button
+            class="btn btn--icon btn--ghost"
+            (click)="backToProject()"
+            aria-label="Add project"
+            >
+                <mat-icon fontIcon="arrow_back"></mat-icon>
+            </button>
+            <h1>{{ selectedCharacter?.name }} (Country)</h1>
+        </div>
+
+        <div class="grouped-flex-box">
+            <h2>Character</h2>
+            <div class="grouped-flex-box-wrapper vertical-flex">
+                <div class="input-container">
+                    <label for="shortDescription">Nickname</label>
+                    <input formControlName="nickName" type="text" name="nickName" id="nickName"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="longDescription">Description</label>
+                    <textarea formControlName="description" name="description" id="description"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="grouped-flex-box">
+            <h2>Core Traits</h2>
+            <div class="grouped-flex-box-wrapper">
+                <div class="input-container">
+                    <label for="shortDescription">Role</label>
+                    <input formControlName="role" type="text" name="role" id="role"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Race</label>
+                    <input formControlName="race" type="text" name="race" id="race"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Alignment</label>
+                    <input formControlName="alignment" type="text" name="alignment" id="alignment"/>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+
+        <div class="grouped-flex-box">
+            <h2>Appearance</h2>
+            <div class="grouped-flex-box-wrapper">
+                <div class="input-container">
+                    <label for="shortDescription">Height</label>
+                    <input formControlName="height" type="number" name="height" id="height"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Weight</label>
+                    <input formControlName="weight" type="number" name="weight" id="weight"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Eye Shape</label>
+                    <input formControlName="eyeShape" type="text" name="eyeShape" id="eyeShape"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Eye Color Left</label>
+                    <input formControlName="eyeColorLeft" type="text" name="eyeColorLeft" id="eyeColorLeft"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Eye Color Right</label>
+                    <input formControlName="eyeColorRight" type="text" name="eyeColorRight" id="eyeColorRight"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Hair Type</label>
+                    <input formControlName="hairType" type="text" name="hairType" id="hairType"/>
+                </div>
+
+            </div>
+        </div>
+
+        <hr>
+        
+        <div class="grouped-flex-box">
+            <h2>Personality</h2>
+            <div class="grouped-flex-box-wrapper">
+                <div class="input-container">
+                    <label for="shortDescription">Top Traits</label>
+                    <input formControlName="topTraits" type="text" name="topTraits" id="topTraits"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Temperament</label>
+                    <input formControlName="temperament" type="text" name="temperament" id="temperament"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Goals</label>
+                    <input formControlName="goals" type="text" name="goals" id="goals"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Fears</label>
+                    <input formControlName="fears" type="text" name="fears" id="fears"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Habits</label>
+                    <input formControlName="habits" type="text" name="habits" id="habits"/>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        
+        <div class="grouped-flex-box">
+            <h2>Background</h2>
+            <div class="grouped-flex-box-wrapper">
+                <div class="input-container">
+                    <label for="shortDescription">Home Region</label>
+                    <input formControlName="homeRegion" type="text" name="homeRegion" id="homeRegion"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Occupation</label>
+                    <input formControlName="occupation" type="text" name="occupation" id="occupation"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Education</label>
+                    <input formControlName="education" type="text" name="education" id="education"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Languages</label>
+                    <input formControlName="languages" type="text" name="languages" id="languages"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Backstory</label>
+                    <input formControlName="backstory" type="text" name="backstory" id="backstory"/>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        
+        <div class="grouped-flex-box">
+            <h2>Skills</h2>
+            <div class="grouped-flex-box-wrapper">
+                <div class="input-container">
+                    <label for="shortDescription">Skills</label>
+                    <input formControlName="skills" type="text" name="skills" id="skills"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Specialities</label>
+                    <input formControlName="specialities" type="text" name="specialities" id="specialities"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Powers</label>
+                    <input formControlName="powers" type="text" name="powers" id="powers"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Tools</label>
+                    <input formControlName="tools" type="text" name="tools" id="tools"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Weapons</label>
+                    <input formControlName="weapons" type="text" name="weapons" id="weapons"/>
+                </div>
+
+                <div class="input-container">
+                    <label for="shortDescription">Weaknesses</label>
+                    <input formControlName="weaknesses" type="text" name="weaknesses" id="weaknesses"/>
+                </div>
+            </div>
+        </div>
+
+        <button
+        class="btn btn--primary btn--sm"
+        type="submit"
+        [disabled]="form.invalid || !form.dirty"
+        (click)="applyChanges()"
+        >
+        Apply Changes
+        </button>
+    </div>
+</form>
+

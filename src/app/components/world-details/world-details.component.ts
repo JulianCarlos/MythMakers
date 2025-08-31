@@ -104,13 +104,9 @@ export class WorldDetailsComponent implements OnInit {
     if (!this.selectedProject || !this.selectedWorld) return;
     if (this.form.invalid || this.form.pristine) return;
 
-    const { shortDescription, longDescription, history } = this.form.value;
-
     const updatedWorld: WorldDto = {
       ...this.selectedWorld,
-      shortDescription,
-      longDescription,
-      history
+      ...this.form.value,
     };
 
     const updatedWorlds = (this.selectedProject.worlds ?? []).map(w =>

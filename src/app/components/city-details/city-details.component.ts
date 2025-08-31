@@ -104,13 +104,9 @@ export class CityDetailsComponent {
     if (!this.selectedProject || !this.selectedCity) return;
     if (this.form.invalid || this.form.pristine) return;
 
-    const { shortDescription, longDescription, history } = this.form.value;
-
     const updatedCity: CityDto = {
       ...this.selectedCity,
-      shortDescription,
-      longDescription,
-      history
+      ...this.form.value,
     };
 
     const updatedCities = (this.selectedProject.cities ?? []).map(w =>

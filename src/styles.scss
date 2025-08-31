@@ -46,6 +46,11 @@ label {
   padding: 0 !important;
 }
 
+hr {
+  border-color: gray;
+  border-width: 2px;
+}
+
 body {
   height: 100vh !important;
   width: 100%;
@@ -337,3 +342,16 @@ mat-icon {
   flex-direction: column !important;
   align-items: flex-start !important;
 }
+
+.grouped-flex-box {
+  display: flex;
+  flex-direction: column;
+  padding: 50px 0px;
+}
+
+.grouped-flex-box-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 50px;
+}
+
