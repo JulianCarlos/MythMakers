@@ -83,38 +83,9 @@ export class CharacterDetailsComponent {
         this.selectedProject = project;
         this.selectedCharacter = character;
         
-        this.form.reset(
-          {
-            nickName:        character?.nickName        ?? '',
-            description:     character?.description     ?? '',
-            role:            character?.role            ?? '',
-            race:            character?.race            ?? '',
-            alignment:       character?.alignment       ?? '',
-            height:          character?.height          ?? '',
-            weight:          character?.weight          ?? '',
-            eyeShape:        character?.eyeShape        ?? '',
-            eyeColorLeft:    character?.eyeColorLeft    ?? '',
-            eyeColorRight:   character?.eyeColorRight   ?? '',
-            hairType:        character?.hairType        ?? '',
-            topTraits:       character?.topTraits       ?? '',
-            temperament:     character?.temperament     ?? '',
-            goals:           character?.goals           ?? '',
-            fears:           character?.fears           ?? '',
-            habits:          character?.habits          ?? '',
-            homeRegion:      character?.homeRegion      ?? '',
-            occupation:      character?.occupation      ?? '',
-            education:       character?.education       ?? '',
-            languages:       character?.languages       ?? '',
-            backstory:       character?.backstory       ?? '',
-            skills:          character?.skills          ?? '',
-            specialities:    character?.specialities    ?? '',
-            powers:          character?.powers          ?? '',
-            tools:           character?.tools           ?? '',
-            weapons:         character?.weapons         ?? '',
-            weaknesses:      character?.weaknesses      ?? '',
-          },
-          { emitEvent: false }
-        );
+        this.form.reset({ ...character }, { emitEvent: false });
+        this.form.markAsPristine();
+        this.form.markAsUntouched();
       });
   }
 
