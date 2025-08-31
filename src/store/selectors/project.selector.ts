@@ -13,6 +13,26 @@ export const getProjectsStateProjects = createSelector(
   fromState.getSectionQueryResultEntities
 );
 
+export const getProjectsStateWorlds = createSelector(
+  getProjectsState,
+  fromState.getSectionQueryAllWorlds
+);
+
+export const getProjectsStateCountries = createSelector(
+  getProjectsState,
+  fromState.getSectionQueryAllCountries
+);
+
+export const getProjectsStateCitites = createSelector(
+  getProjectsState,
+  fromState.getSectionQueryAllCitites
+);
+
+export const getProjectsStateCharacters = createSelector(
+  getProjectsState,
+  fromState.getSectionQueryAllCharacters
+);
+
 export const getProjectsStateProjectById = (id: number | string) =>
   createSelector(getProjectsStateProjects, (projects) => {
     const target = Number(id);

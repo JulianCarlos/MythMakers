@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { CharacterDto, ProjectDto } from '@api/models';
 import { Store } from '@ngrx/store';
+import { createFormGroupFromClass } from 'app/core/form-group.factory';
+import { CharacterDetailFormType } from 'app/core/form-types/character-detail-form-type';
 import { ModalService } from 'app/core/modal/modal.service';
 import { filter, first, withLatestFrom } from 'rxjs';
 
@@ -25,7 +27,6 @@ import * as fromSelectors from 'store/selectors/project.selector';
 })
 export class CharacterDetailsComponent {
   private readonly store = inject(Store);
-  private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly modal = inject(ModalService);
   private readonly destroyRef = inject(DestroyRef);
@@ -36,34 +37,11 @@ export class CharacterDetailsComponent {
   protected selectedCharacter?: CharacterDto | null;
   private selectedProject?: ProjectDto | null;
 
-  protected form: FormGroup = this.fb.group({ 
-    nickName: [''],
-    description: [''],
-    role: [''],
-    race: [''],
-    alignment: [''],
-    height: [''],
-    weight: [''],
-    eyeShape: [''],
-    eyeColorLeft: [''],
-    eyeColorRight: [''],
-    hairType: [''],
-    topTraits: [''],
-    temperament: [''],
-    goals: [''],
-    fears: [''],
-    habits: [''],
-    homeRegion: [''],
-    occupation: [''],
-    education: [''],
-    languages: [''],
-    backstory: [''],
-    skills: [''],
-    specialities: [''],
-    powers: [''],
-    tools: [''],
-    weapons: [''],
-    weaknesses: [''],
+  protected form = createFormGroupFromClass(CharacterDetailFormType, {
+    validators: {
+      height: Validators.min(0),
+      weight: Validators.min(0),
+    },
   });
 
   ngOnInit(): void {
