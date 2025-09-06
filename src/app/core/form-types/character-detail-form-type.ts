@@ -1,4 +1,5 @@
 import { FormControl } from "@angular/forms"
+import { CharacterDto } from "@api/models";
 
 export class CharacterDetailFormType {
     nickName: FormControl<string> = null;
@@ -28,4 +29,5 @@ export class CharacterDetailFormType {
     tools: FormControl<string> = null;
     weapons: FormControl<string> = null;
     weaknesses: FormControl<string> = null;
+    friends: FormControl<CharacterDto[]> = null;
 }

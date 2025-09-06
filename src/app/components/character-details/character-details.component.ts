@@ -1,11 +1,11 @@
+import { DialogModule } from '@angular/cdk/dialog'; // <-- add this
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
-import { DialogModule } from '@angular/cdk/dialog';              // <-- add this
 import { Router } from '@angular/router';
-import { CharacterDto, ProjectDto } from '@api/models';
+import { CharacterDto, CharacterRelationDto, ProjectDto, RelationType } from '@api/models';
 import { Store } from '@ngrx/store';
 import { createFormGroupFromClass } from 'app/core/form-group.factory';
 import { CharacterDetailFormType } from 'app/core/form-types/character-detail-form-type';
@@ -61,6 +61,10 @@ export class CharacterDetailsComponent {
       fromSelectors.getProjectsStateProjectProperty(this.projectId, 'characters')
     );
 
+    this.datasource.subscribe(value => {
+      console.log("value", value);
+    })
+
     const project$ = this.store
       .select(fromSelectors.getProjectsStateProjectById(this.projectId))
       .pipe(filter((p): p is ProjectDto => !!p));
@@ -75,10 +79,11 @@ export class CharacterDetailsComponent {
         this.selectedProject = project;
         this.selectedCharacter = character;
 
-        // If your character already has related selections, hydrate them here:
-        // this.selectedCharacters = character.relatedCharacters ?? [];
-
-        this.form.reset({ ...character }, { emitEvent: false });
+        this.form.reset({ 
+          ...character 
+        }, 
+        { emitEvent: false });
+        
         this.form.markAsPristine();
         this.form.markAsUntouched();
       });
@@ -108,11 +113,12 @@ export class CharacterDetailsComponent {
     if (!this.selectedProject || !this.selectedCharacter) return;
     if (this.form.invalid || this.form.pristine) return;
 
+    const { friends } = this.form.value;
+
     const updatedCharacter: CharacterDto = {
       ...this.selectedCharacter,
       ...this.form.value,
-      // Persist the grid selection if you have a field for it:
-      // relatedCharacters: this.selectedCharacters,
+      relation: this.toCharacterRelation(friends) ?? []
     };
 
     const updatedCharacters = (this.selectedProject.characters ?? []).map((w) =>
@@ -130,5 +136,15 @@ export class CharacterDetailsComponent {
 
     this.form.markAsPristine();
     this.form.markAsUntouched();
+  }
+
+  toCharacterRelation(relations: CharacterDto[]): CharacterRelationDto[] {
+    if (!this.selectedCharacter?.id) return [];
+
+    return relations.map(({ id }) => ({
+      characterFromId: this.selectedCharacter!.id,
+      characterToId: id,
+      relationType: RelationType.Friend,
+    }));
   }
 }
