@@ -1,8 +1,8 @@
-import { DialogModule } from '@angular/cdk/dialog'; // <-- add this
+import { DialogModule } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { CharacterDto, CharacterRelationDto, ProjectDto, RelationType } from '@api/models';
@@ -12,22 +12,15 @@ import { CharacterDetailFormType } from 'app/core/form-types/character-detail-fo
 import { ModalService } from 'app/core/modal/modal.service';
 import { SelectionGridComponent } from 'app/core/selection-grid/selection-grid.component';
 import { filter, first, Observable, withLatestFrom } from 'rxjs';
-
 import * as fromActions from 'store/actions/project.action';
 import * as fromSelectors from 'store/selectors/project.selector';
 
 @Component({
   selector: 'app-character-details',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatIcon,
-    DialogModule,                    // <-- required for SelectionGrid's CDK dialog
-    SelectionGridComponent
-  ],
+  imports: [CommonModule, ReactiveFormsModule, MatIcon, DialogModule, SelectionGridComponent],
   templateUrl: './character-details.component.html',
-  styleUrl: './character-details.component.scss',
+  styleUrls: ['./character-details.component.scss'],
 })
 export class CharacterDetailsComponent {
   private readonly store = inject(Store);
@@ -38,32 +31,35 @@ export class CharacterDetailsComponent {
   @Input() projectId!: number;
   @Input() characterId!: number;
 
-  protected datasource!: Observable<readonly CharacterDto[]>;     // all available options
+  protected datasource!: Observable<CharacterDto[]>;
   protected selectedCharacter?: CharacterDto | null;
   private selectedProject?: ProjectDto | null;
 
-  // The items currently shown in the grid (what you've “added”)
-  protected selectedCharacters: readonly CharacterDto[] = [];
-
-  // How to display each option/tile
-  protected displayCharacter = (c: CharacterDto) =>
-    c?.name ?? c?.nickName ?? `#${c?.id ?? ''}`;
+  protected displayCharacter = (c: CharacterDto) => c?.name ?? c?.nickName ?? `#${c?.id ?? ''}`;
 
   protected form = createFormGroupFromClass(CharacterDetailFormType, {
+    overrides: {
+      family: () => new FormControl<CharacterDto[]>([]),
+      friends: () => new FormControl<CharacterDto[]>([]),
+    },
     validators: {
       height: Validators.min(0),
       weight: Validators.min(0),
     },
   });
 
+  private totalCharacters: CharacterDto[] = [];
+  private characterById = new Map<number, CharacterDto>();
+
   ngOnInit(): void {
     this.datasource = this.store.select(
       fromSelectors.getProjectsStateProjectProperty(this.projectId, 'characters')
     );
 
-    this.datasource.subscribe(value => {
-      console.log("value", value);
-    })
+    this.datasource.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((chars) => {
+      this.totalCharacters = chars ?? [];
+      this.characterById = new Map(this.totalCharacters.map((c) => [c.id, c] as const));
+    });
 
     const project$ = this.store
       .select(fromSelectors.getProjectsStateProjectById(this.projectId))
@@ -73,20 +69,22 @@ export class CharacterDetailsComponent {
       .select(fromSelectors.getSelectedProjectProperty('characters', this.characterId))
       .pipe(filter((w): w is CharacterDto => !!w));
 
-    character$
-      .pipe(withLatestFrom(project$), takeUntilDestroyed(this.destroyRef))
-      .subscribe(([character, project]) => {
-        this.selectedProject = project;
-        this.selectedCharacter = character;
+    character$.pipe(withLatestFrom(project$), takeUntilDestroyed(this.destroyRef)).subscribe(([character, project]) => {
+      this.selectedProject = project;
+      this.selectedCharacter = character;
 
-        this.form.reset({ 
-          ...character 
-        }, 
-        { emitEvent: false });
-        
-        this.form.markAsPristine();
-        this.form.markAsUntouched();
-      });
+      this.form.reset(
+        {
+          ...character,
+          family: this.fromRelationToCharacter(character.relation, RelationType.Family),
+          friends: this.fromRelationToCharacter(character.relation, RelationType.Friend),
+        },
+        { emitEvent: false }
+      );
+
+      this.form.markAsPristine();
+      this.form.markAsUntouched();
+    });
   }
 
   backToProject() {
@@ -113,12 +111,17 @@ export class CharacterDetailsComponent {
     if (!this.selectedProject || !this.selectedCharacter) return;
     if (this.form.invalid || this.form.pristine) return;
 
-    const { friends } = this.form.value;
+    const { friends, family } = this.form.value;
 
+    const relation: CharacterRelationDto[] = [
+      ...this.fromCharacterToRelation(family, RelationType.Family),
+      ...this.fromCharacterToRelation(friends, RelationType.Friend),
+    ];
+    
     const updatedCharacter: CharacterDto = {
       ...this.selectedCharacter,
       ...this.form.value,
-      relation: this.toCharacterRelation(friends) ?? []
+      relation: relation,
     };
 
     const updatedCharacters = (this.selectedProject.characters ?? []).map((w) =>
@@ -138,13 +141,31 @@ export class CharacterDetailsComponent {
     this.form.markAsUntouched();
   }
 
-  toCharacterRelation(relations: CharacterDto[]): CharacterRelationDto[] {
+  fromCharacterToRelation(
+    characters: CharacterDto[],
+    relationType: RelationType = RelationType.Friend
+  ): CharacterRelationDto[] {
     if (!this.selectedCharacter?.id) return [];
 
-    return relations.map(({ id }) => ({
+    return characters.map(({ id }) => ({
       characterFromId: this.selectedCharacter!.id,
       characterToId: id,
-      relationType: RelationType.Friend,
+      relationType,
     }));
+  }
+
+  fromRelationToCharacter(
+    relations: CharacterRelationDto[] = [],
+    relationType: RelationType = RelationType.Friend
+  ): CharacterDto[] {
+    if (!relations.length || !this.totalCharacters.length) return [];
+
+    return relations
+      .filter(
+        (r): r is CharacterRelationDto & { characterToId: number } =>
+          r.relationType === relationType && typeof r.characterToId === 'number'
+      )
+      .map((r) => this.characterById.get(r.characterToId))
+      .filter((c): c is CharacterDto => !!c);
   }
 }

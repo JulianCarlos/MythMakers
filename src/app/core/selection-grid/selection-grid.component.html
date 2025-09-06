@@ -1,3 +1,4 @@
+<!-- selection-grid.component.html -->
 <div class="segment-header-container">
   <h2 class="segment-title">{{ title }}</h2>
 
@@ -19,7 +20,7 @@
 </div>
 
 <div class="entity-list__grid" role="list">
-  <div class="entity-list__tile" role="listitem" *ngFor="let item of value; trackBy: trackByIndex">
+  <div class="entity-list__tile" role="listitem" *ngFor="let item of value; trackBy: trackByIdOrIndex">
     <button
       type="button"
       [ngClass]="itemButtonClass"
@@ -35,12 +36,13 @@
       class="btn btn--icon btn--outline delete"
       aria-haspopup="menu"
       [attr.aria-label]="removeAriaLabel"
+      [disabled]="disabled"
     >
       <mat-icon fontIcon="more_vert" aria-hidden="true"></mat-icon>
     </button>
 
     <mat-menu #itemMenu="matMenu" xPosition="after" yPosition="below">
-      <button mat-menu-item (click)="$event.stopPropagation(); onRemove(item)">
+      <button mat-menu-item (click)="$event.stopPropagation(); onRemove(item)" [disabled]="disabled">
         <mat-icon fontIcon="delete"></mat-icon>
         <span>Delete</span>
       </button>
@@ -55,6 +57,7 @@
     class="entity-list__button add-button"
     [style.background]="tileBackground ?? null"
     (click)="openPicker()"
+    [disabled]="disabled"
   >
     +
   </button>

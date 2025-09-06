@@ -180,9 +180,20 @@
                 <app-selection-grid
                 formControlName="friends"
                 [options$]="datasource"
-                [(value)]="selectedCharacters"
                 [displayWith]="displayCharacter"
+                [exclude]="selectedCharacter"
                 title="Friends"
+                addLabel="Add"
+                />
+            </div>
+
+            <div class="input-container">
+                <app-selection-grid
+                formControlName="family"
+                [options$]="datasource"
+                [displayWith]="displayCharacter"
+                [exclude]="selectedCharacter"
+                title="Family"
                 addLabel="Add"
                 />
             </div>
