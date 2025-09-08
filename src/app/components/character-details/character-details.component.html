@@ -178,6 +178,17 @@
 
             <div class="input-container">
                 <app-selection-grid
+                formControlName="family"
+                [options$]="datasource"
+                [displayWith]="displayCharacter"
+                [exclude]="selectedCharacter"
+                title="Family"
+                addLabel="Add"
+                />
+            </div>
+
+            <div class="input-container">
+                <app-selection-grid
                 formControlName="friends"
                 [options$]="datasource"
                 [displayWith]="displayCharacter"
@@ -189,13 +200,39 @@
 
             <div class="input-container">
                 <app-selection-grid
-                formControlName="family"
+                formControlName="enemies"
                 [options$]="datasource"
                 [displayWith]="displayCharacter"
                 [exclude]="selectedCharacter"
-                title="Family"
+                title="Enemies"
                 addLabel="Add"
                 />
+            </div>
+
+            <div class="input-container">
+                <app-selection-grid
+                formControlName="allies"
+                [options$]="datasource"
+                [displayWith]="displayCharacter"
+                [exclude]="selectedCharacter"
+                title="Allies"
+                addLabel="Add"
+                />
+            </div>
+
+            <div class="input-container">
+                <app-selection-grid
+                formControlName="rivals"
+                [options$]="datasource"
+                [displayWith]="displayCharacter"
+                [exclude]="selectedCharacter"
+                title="Rivals"
+                addLabel="Add"
+                />
+            </div>
+
+            <div class="input-container">
+                <input type="color">
             </div>
         </div>
 

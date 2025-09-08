@@ -5,7 +5,9 @@
 export type { CharacterDto } from './models/character-dto';
 export type { CharacterRelationDto } from './models/character-relation-dto';
 export type { CityDto } from './models/city-dto';
+export type { CityRelationDto } from './models/city-relation-dto';
 export type { CountryDto } from './models/country-dto';
+export type { CountryRelationDto } from './models/country-relation-dto';
 export type { ProblemDetails } from './models/problem-details';
 export type { ProjectDto } from './models/project-dto';
 export { RelationType } from './models/relation-type';

@@ -4,5 +4,8 @@
 
 export enum RelationType {
   Family = 'family',
-  Friend = 'friend'
+  Friend = 'friend',
+  Enemy = 'enemy',
+  Rival = 'rival',
+  Ally = 'ally'
 }

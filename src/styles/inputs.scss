@@ -1,0 +1,150 @@
+:root {
+  --color-swatch-size: 42px;
+  --color-swatch-pad: 4px;
+  --color-swatch-border: rgba(255, 255, 255, 0.22);
+}
+
+input:not([type="search"]):not([type="color"]),
+textarea {
+  padding: var(--field-padding);
+  font-size: var(--field-font-size);
+  border-radius: var(--field-radius);
+  border: none;
+  background: var(--field-bg);
+  color: var(--text-main);
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease,
+    transform 0.15s ease;
+
+  &::placeholder { color: var(--text-muted); }
+
+  &:focus {
+    outline: none;
+    background: var(--field-bg-focus);
+    box-shadow: var(--focus-ring);
+    transform: scale(1.02);
+  }
+
+  &:-webkit-autofill {
+    box-shadow: 0 0 0px 1000px #3b5e68 inset;
+    -webkit-text-fill-color: var(--text-main);
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+input:not([type="search"]):not([type="color"]) {
+  width: var(--input-width);
+  max-width: 100%;
+}
+
+textarea {
+  width: var(--textarea-width);
+  height: var(--textarea-height);
+  max-width: 100%;
+  resize: vertical;
+}
+
+input[type="search"] {
+  width: 100%;
+  max-width: 820px;
+  padding: 12px 14px 12px 42px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  background: var(--panel-bg);
+  color: var(--text-main);
+  box-shadow: var(--shadow-inset);
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.15s ease,
+    padding 0.2s ease;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16a6.471 6.471 0 004.23-1.57l.27.28v.79l5 5 1.5-1.5-5-5zm-6 0C8.01 14 6 11.99 6 9.5S8.01 5 10.5 5 15 7.01 15 9.5 12.99 14 10.5 14z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: 18px;
+  background-position: 14px center;
+
+  &::placeholder { color: var(--text-muted); font-weight: 500; }
+
+  &:focus {
+    outline: none;
+    background: var(--panel-bg-focus);
+    box-shadow: var(--focus-ring);
+    transform: scale(1.01);
+    padding-left: 14px;
+    background-image: none;
+  }
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0;
+  width: var(--color-swatch-size);
+  height: calc(var(--color-swatch-size) * 0.9);
+  border-radius: var(--field-radius);
+  border: 1px solid var(--border-light);
+  background: var(--panel-bg);
+  box-shadow: var(--shadow-inset);
+  cursor: pointer;
+  vertical-align: middle;
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.15s ease;
+
+  &:hover { transform: translateY(-1px); }
+  &:active { transform: translateY(0) scale(0.98); }
+
+  &:focus {
+    outline: none;
+    background: var(--panel-bg-focus);
+    box-shadow: var(--focus-ring);
+    transform: scale(1.02);
+  }
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: var(--color-swatch-pad);
+  border-radius: inherit;
+}
+input[type="color"]::-webkit-color-swatch {
+  border-radius: calc(var(--field-radius) - var(--color-swatch-pad));
+  border: 1px solid var(--color-swatch-border);
+}
+input[type="color"]::-moz-color-swatch {
+  border-radius: calc(var(--field-radius) - var(--color-swatch-pad));
+  border: 1px solid var(--color-swatch-border);
+}
+
+.color-input--sm { --color-swatch-size: 36px; }
+.color-input--lg { --color-swatch-size: 50px; }
+
+.color-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  input[type="text"] {
+    width: 110px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+input.ng-invalid.ng-touched {
+  border: 2px solid #b41818;
+  box-shadow: 0 0 6px rgba(229, 115, 115, 0.6);
+}
+
+.login-container input { width: 100%; }
+
+.textarea--full { width: 100% !important; }
+.textarea--sm   { width: 480px !important; height: 140px !important; }
+.textarea--lg   { width: 800px !important; height: 280px !important; }
+.textarea--auto { height: auto !important; }

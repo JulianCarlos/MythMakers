@@ -29,6 +29,9 @@ export class CharacterDetailFormType {
     tools: FormControl<string> = null;
     weapons: FormControl<string> = null;
     weaknesses: FormControl<string> = null;
-    friends: FormControl<CharacterDto[]> = null;
     family: FormControl<CharacterDto[]> = null;
+    friends: FormControl<CharacterDto[]> = null;
+    enemies: FormControl<CharacterDto[]> = null;
+    allies: FormControl<CharacterDto[]> = null;
+    rivals: FormControl<CharacterDto[]> = null;
 }

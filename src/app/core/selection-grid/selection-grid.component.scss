@@ -13,6 +13,10 @@
   margin-bottom: 10px;
   gap: 10px;
   border-bottom: 1px dashed #fff;
+
+  h2 {
+    border-bottom: none;
+  }
 }
 
 .segment-title {

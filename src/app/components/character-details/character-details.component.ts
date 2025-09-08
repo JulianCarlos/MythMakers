@@ -78,6 +78,9 @@ export class CharacterDetailsComponent {
           ...character,
           family: this.fromRelationToCharacter(character.relation, RelationType.Family),
           friends: this.fromRelationToCharacter(character.relation, RelationType.Friend),
+          enemies: this.fromRelationToCharacter(character.relation, RelationType.Enemy),
+          allies: this.fromRelationToCharacter(character.relation, RelationType.Ally),
+          rivals: this.fromRelationToCharacter(character.relation, RelationType.Rival),
         },
         { emitEvent: false }
       );
@@ -111,11 +114,14 @@ export class CharacterDetailsComponent {
     if (!this.selectedProject || !this.selectedCharacter) return;
     if (this.form.invalid || this.form.pristine) return;
 
-    const { friends, family } = this.form.value;
+    const { friends, family, enemies, allies, rivals } = this.form.value;
 
     const relation: CharacterRelationDto[] = [
       ...this.fromCharacterToRelation(family, RelationType.Family),
       ...this.fromCharacterToRelation(friends, RelationType.Friend),
+      ...this.fromCharacterToRelation(enemies, RelationType.Enemy),
+      ...this.fromCharacterToRelation(allies, RelationType.Ally),
+      ...this.fromCharacterToRelation(rivals, RelationType.Rival),
     ];
     
     const updatedCharacter: CharacterDto = {
